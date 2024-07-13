@@ -3,13 +3,15 @@
   "version": "1.0.0",
   "main": "src/main/main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "rebuild": "electron-rebuild -f -w addon"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "@electron/rebuild": "^3.6.0",
     "electron": "^31.2.0"
   }
 }

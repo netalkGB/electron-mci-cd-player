@@ -1,6 +1,5 @@
 const path = require('node:path')
 const { app, BrowserWindow, ipcMain } = require('electron')
-
 const createWindow = () => {
   const win = new BrowserWindow({
     width: 800,
@@ -15,7 +14,8 @@ const createWindow = () => {
   ipcMain.handle('do-athing', (event, ...args) => {
     console.log("do-athing")
     return new Promise((resolve, reject) => {
-      resolve('done')
+      
+      resolve("test")
     })
   })
   win.loadFile(path.join(__dirname, '..', 'renderer', 'index.html'))
