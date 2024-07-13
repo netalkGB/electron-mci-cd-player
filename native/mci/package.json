@@ -1,0 +1,14 @@
+{
+    "name": "mci",
+    "main": "index.js",
+    "scripts": {
+        "install": "node-gyp rebuild",
+        "configure": "node-gyp configure",
+        "build": "node-gyp build",
+        "clean": "node-gyp clean"
+    },
+    "gypfile": true,
+    "devDependencies": {
+        "node-gyp": "^10.2.0"
+    }
+}
