@@ -16,7 +16,7 @@ const createWindow = () => {
     console.log("do-athing")
     return new Promise((resolve, reject) => {
       
-      resolve(mci.hello())
+      resolve(mci.echo("testa"))
     })
   })
   win.loadFile(path.join(__dirname, '..', 'renderer', 'index.html'))
