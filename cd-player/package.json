@@ -4,7 +4,7 @@
   "main": "src/main/main.js",
   "scripts": {
     "start": "electron .",
-    "rebuild": "electron-rebuild -f -w addon"
+    "rebuild": "electron-rebuild"
   },
   "keywords": [],
   "author": "",
@@ -13,5 +13,8 @@
   "devDependencies": {
     "@electron/rebuild": "^3.6.0",
     "electron": "^31.2.0"
+  },
+  "dependencies": {
+    "mci": "file:../native/mci"
   }
 }
