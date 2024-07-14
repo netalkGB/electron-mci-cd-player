@@ -1,3 +1,3 @@
-const addon = require('./build/Release/addon');
+const mci = require('./build/Release/mci');
 
-module.exports = addon;
+module.exports = mci;

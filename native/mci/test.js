@@ -1,8 +1,8 @@
-const addon = require('./build/Release/addon');
+const mci = require('./build/Release/mci');
 
-console.log( addon.hello() );
-console.log( addon.echo("ok") );
+console.log( mci.hello() );
+console.log( mci.echo("ok") );
 
-addon.openCd()
-console.log(addon.getTrackCount())
-addon.closeCd()
+mci.openCd()
+console.log(mci.getTrackCount())
+mci.closeCd()

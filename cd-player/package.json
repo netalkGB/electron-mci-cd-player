@@ -4,7 +4,7 @@
   "main": "src/main/main.js",
   "scripts": {
     "start": "electron .",
-    "rebuild": "electron-rebuild"
+    "rebuild": "node script/rebuild.js"
   },
   "keywords": [],
   "author": "",
@@ -16,5 +16,10 @@
   },
   "dependencies": {
     "mci": "file:../native/mci"
+  },
+  "cmake-js": {
+    "runtime": "electron",
+    "runtimeVersion": "31.2.0",
+    "arch": "x64"
   }
 }
