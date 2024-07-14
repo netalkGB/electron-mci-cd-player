@@ -1,2 +1,4 @@
-build
+build/
 bin
+.cmake
+cmake-build-debug
