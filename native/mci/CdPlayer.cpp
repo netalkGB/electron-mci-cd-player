@@ -17,7 +17,7 @@ namespace mci {
   }
 
   bool CdPlayer::OpenCd() {
-    return _OpenCd() != 0;
+    return _OpenCd() == 0;
   }
 
   int CdPlayer::GetTrackCount() {
@@ -28,7 +28,7 @@ namespace mci {
   }
 
   bool CdPlayer::CloseCd() {
-    return _CloseCd() != 0;
+    return _CloseCd() == 0;
   }
 
   void CdPlayer::Play(int track) {
