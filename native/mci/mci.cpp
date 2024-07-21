@@ -1,4 +1,4 @@
-#include <nan.h>
+#include <napi.h>
 #include <windows.h>
 
 #include "CdPlayer.h"
@@ -9,31 +9,34 @@
 #pragma comment(lib, "winmm.lib")
 
 namespace mci {
-  CdPlayer *cdPlayer;
+  CdPlayer cdPlayer;
 
-  NAN_METHOD(OpenCd) {
-    info.GetReturnValue().Set(Nan::New(cdPlayer->OpenCd()));
+  Napi::Value OpenCd(const Napi::CallbackInfo& info) {
+    Napi::Env env = info.Env();
+    return Napi::Boolean::New(env, cdPlayer.OpenCd());
   }
 
-  NAN_METHOD(GetTrackCount) {
+  Napi::Value GetTrackCount(const Napi::CallbackInfo& info) {
+    Napi::Env env = info.Env();
     try {
-      info.GetReturnValue().Set(Nan::New(cdPlayer->GetTrackCount()));
+      return Napi::Number::New(env, cdPlayer.GetTrackCount());
     } catch (CdPlayerException &e) {
-      Nan::ThrowError("Error getting track count");
+      Napi::TypeError::New(env, "Error getting track count").ThrowAsJavaScriptException();
+      return env.Null();
     }
   }
 
-  NAN_METHOD(CloseCd) {
-    info.GetReturnValue().Set(Nan::New(cdPlayer->CloseCd()));
+  Napi::Value CloseCd(const Napi::CallbackInfo& info) {
+    Napi::Env env = info.Env();
+    return Napi::Boolean::New(env, cdPlayer.CloseCd());
   }
 
-  NAN_MODULE_INIT(init) {
-    cdPlayer = new CdPlayer();
-    Nan::SetMethod(target, "openCd", OpenCd);
-    Nan::SetMethod(target, "getTrackCount", GetTrackCount);
-    Nan::SetMethod(target, "closeCd", CloseCd);
+  Napi::Object Init(Napi::Env env, Napi::Object exports) {
+    exports.Set(Napi::String::New(env, "openCd"), Napi::Function::New(env, OpenCd));
+    exports.Set(Napi::String::New(env, "getTrackCount"), Napi::Function::New(env, GetTrackCount));
+    exports.Set(Napi::String::New(env, "closeCd"), Napi::Function::New(env, CloseCd));
+    return exports;
   }
 
-  NODE_MODULE(addon, init)
-
+  NODE_API_MODULE(addon, Init)
 }
