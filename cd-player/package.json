@@ -11,6 +11,8 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "cmake-js": "^7.3.0",
+    "cross-spawn": "^7.0.3",
     "electron": "^31.2.0"
   },
   "dependencies": {
