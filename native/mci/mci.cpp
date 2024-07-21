@@ -29,10 +29,83 @@ namespace mci {
     return Napi::Boolean::New(info.Env(), cdPlayer.CloseCd());
   }
 
+  Napi::Value Play(const Napi::CallbackInfo& info) {
+    Napi::Env env = info.Env();
+    if (info.Length() < 1 || !info[0].IsNumber()) {
+      Napi::TypeError::New(env, "Expected a number as the first argument").ThrowAsJavaScriptException();
+      return env.Null();
+    }
+    int trackNumber = info[0].As<Napi::Number>().Int32Value();
+    try {
+      cdPlayer.Play(trackNumber);
+      return Napi::Boolean::New(env, true);
+    } catch (CdPlayerException &e) {
+      Napi::TypeError::New(env, "Error playing track").ThrowAsJavaScriptException();
+      return env.Null();
+    }
+  }
+
+  Napi::Value Stop(const Napi::CallbackInfo& info) {
+    cdPlayer.Stop();
+    return info.Env().Null();
+  }
+
+  Napi::Value Pause(const Napi::CallbackInfo& info) {
+    cdPlayer.Pause();
+    return info.Env().Null();
+  }
+
+  Napi::Value Resume(const Napi::CallbackInfo& info) {
+    cdPlayer.Resume();
+    return info.Env().Null();
+  }
+
+  Napi::Value GetCurrentTrackNumber(const Napi::CallbackInfo& info) {
+    Napi::Env env = info.Env();
+    try {
+      return Napi::Number::New(env, cdPlayer.GetCurrentTrackNumber());
+    } catch (CdPlayerException &e) {
+      Napi::TypeError::New(env, "Error getting current track number").ThrowAsJavaScriptException();
+      return env.Null();
+    }
+  }
+
+  Napi::Value GetTrackLength(const Napi::CallbackInfo& info) {
+    Napi::Env env = info.Env();
+    if (info.Length() < 1 || !info[0].IsNumber()) {
+      Napi::TypeError::New(env, "Expected a number as the first argument").ThrowAsJavaScriptException();
+      return env.Null();
+    }
+    int trackNumber = info[0].As<Napi::Number>().Int32Value();
+    try {
+      return Napi::Number::New(env, cdPlayer.GetTrackLength(trackNumber));
+    } catch (CdPlayerException &e) {
+      Napi::TypeError::New(env, "Error getting track length").ThrowAsJavaScriptException();
+      return env.Null();
+    }
+  }
+
+  Napi::Value GetCurrentPosition(const Napi::CallbackInfo& info) {
+    Napi::Env env = info.Env();
+    try {
+      return Napi::Number::New(env, cdPlayer.GetCurrentPosition());
+    } catch (CdPlayerException &e) {
+      Napi::TypeError::New(env, "Error getting current position").ThrowAsJavaScriptException();
+      return env.Null();
+    }
+  }
+
   Napi::Object Init(Napi::Env env, Napi::Object exports) {
     exports.Set(Napi::String::New(env, "openCd"), Napi::Function::New(env, OpenCd));
     exports.Set(Napi::String::New(env, "getTrackCount"), Napi::Function::New(env, GetTrackCount));
     exports.Set(Napi::String::New(env, "closeCd"), Napi::Function::New(env, CloseCd));
+    exports.Set(Napi::String::New(env, "play"), Napi::Function::New(env, Play));
+    exports.Set(Napi::String::New(env, "stop"), Napi::Function::New(env, Stop));
+    exports.Set(Napi::String::New(env, "pause"), Napi::Function::New(env, Pause));
+    exports.Set(Napi::String::New(env, "resume"), Napi::Function::New(env, Resume));
+    exports.Set(Napi::String::New(env, "getCurrentTrackNumber"), Napi::Function::New(env, GetCurrentTrackNumber));
+    exports.Set(Napi::String::New(env, "getTrackLength"), Napi::Function::New(env, GetTrackLength));
+    exports.Set(Napi::String::New(env, "getCurrentPosition"), Napi::Function::New(env, GetCurrentPosition));
     return exports;
   }
 
