@@ -12,8 +12,7 @@ namespace mci {
   CdPlayer cdPlayer;
 
   Napi::Value OpenCd(const Napi::CallbackInfo& info) {
-    Napi::Env env = info.Env();
-    return Napi::Boolean::New(env, cdPlayer.OpenCd());
+    return Napi::Boolean::New(info.Env(), cdPlayer.OpenCd());
   }
 
   Napi::Value GetTrackCount(const Napi::CallbackInfo& info) {
@@ -27,8 +26,7 @@ namespace mci {
   }
 
   Napi::Value CloseCd(const Napi::CallbackInfo& info) {
-    Napi::Env env = info.Env();
-    return Napi::Boolean::New(env, cdPlayer.CloseCd());
+    return Napi::Boolean::New(info.Env(), cdPlayer.CloseCd());
   }
 
   Napi::Object Init(Napi::Env env, Napi::Object exports) {
