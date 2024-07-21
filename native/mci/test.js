@@ -1,5 +1,7 @@
 const mci = require('./build/Release/mci');
 
-mci.openCd()
+let openCdRetval = mci.openCd()
+console.log('openCdRetval', openCdRetval)
 console.log(mci.getTrackCount())
-mci.closeCd()
+let closeCdRetval = mci.closeCd()
+console.log('closeCdRetval', closeCdRetval)
