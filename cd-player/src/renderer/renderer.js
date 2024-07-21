@@ -92,6 +92,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         } catch(e) {
             console.error(e)
         }
-    }, 50)
+    }, 1000)
 
 });
