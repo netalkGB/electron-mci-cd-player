@@ -11,8 +11,6 @@ set(CMAKE_CXX_EXTENSIONS NO)
 
 project(mci)
 
-add_definitions(-DNAPI_VERSION=4)
-
 execute_process(
         COMMAND node --version
         OUTPUT_VARIABLE NODE_VERSION_RAW
