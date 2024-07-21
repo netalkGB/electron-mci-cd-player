@@ -3,8 +3,8 @@ const { app, BrowserWindow, ipcMain } = require('electron')
 const mci = require('mci')
 const createWindow = () => {
   const win = new BrowserWindow({
-    width: 500,
-    height: 120,
+    width: 530,
+    height: 80,
     webPreferences: {
       preload: path.join(__dirname, '..', 'preload', 'preload.js'),
       contextIsolation: true,
@@ -12,6 +12,7 @@ const createWindow = () => {
       nodeIntegration: false
     }
   })
+  win.setMenuBarVisibility(false)
 
   ipcMain.handle('open-cd', (event, ...args) => {
     return new Promise((resolve, reject) => {
@@ -113,6 +114,7 @@ const createWindow = () => {
       }
     })
   })
+
 
   win.loadFile(path.join(__dirname, '..', 'renderer', 'index.html'))
 }
