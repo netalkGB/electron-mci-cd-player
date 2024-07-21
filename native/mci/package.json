@@ -5,6 +5,7 @@
         "install": "cmake-js rebuild"
     },
     "dependencies": {
-        "cmake-js": "^7.3.0"
+        "cmake-js": "^7.3.0",
+        "nan": "^2.20.0"
     }
 }
