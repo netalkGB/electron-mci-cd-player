@@ -12,20 +12,35 @@ const createWindow = () => {
       nodeIntegration: false
     }
   })
+
   ipcMain.handle('open-cd', (event, ...args) => {
-    return mci.openCd()
+    return new Promise((resolve, reject) => {
+      try {
+        resolve(mci.openCd())
+      } catch(e) {
+        reject(e)
+      }
+    })
   })
 
   ipcMain.handle('get-track-count', (event, ...args) => {
-    try {
-      return mci.getTrackCount()
-    } catch(e) {
-      console.error("e")
-    }
+    return new Promise((resolve, reject) => {
+      try {
+        resolve(mci.getTrackCount())
+      } catch(e) {
+        reject(e)
+      }
+    })
   })
 
   ipcMain.handle('close-cd', (event, ...args) => {
-    return mci.closeCd()
+    return new Promise((resolve, reject) => {
+      try {
+        resolve(mci.closeCd())
+      } catch(e) {
+        reject(e)
+      }
+    })
   })
 
   win.loadFile(path.join(__dirname, '..', 'renderer', 'index.html'))
@@ -39,3 +54,5 @@ app.on('window-all-closed', () => {
   mci.closeCd()
   if (process.platform !== 'darwin') app.quit()
 })
+
+
