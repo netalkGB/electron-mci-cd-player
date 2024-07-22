@@ -8,7 +8,8 @@ namespace mci {
   : mciStatusParms({}),
     mciGenericParms({}),
     mciOpenParms({}),
-    mciPlayParms({})
+    mciPlayParms({}),
+    mciSetParms({})
   {
   }
 
@@ -60,6 +61,7 @@ namespace mci {
   }
 
   unsigned long CdPlayer::GetTrackLength(int track) {
+    _SetMciSetFormat(MCI_FORMAT_MSF);
     if (_GetTrackLength(track)) {
       CloseCd();
       throw CdPlayerException("Error getting track length");
@@ -68,13 +70,30 @@ namespace mci {
   }
 
   unsigned long CdPlayer::GetCurrentPosition() {
+    if (_SetMciSetFormat(MCI_FORMAT_MSF)) {
+      CloseCd();
+      throw CdPlayerException("Error setting time format");
+    }
+
+    if (_GetCurrentTrackNumber()) {
+      CloseCd();
+      throw CdPlayerException("Error getting current track number");
+    }
+    DWORD dwCurrentTrackNumber = mciStatusParms.dwReturn;
+
     if (_GetCurrentPosition()) {
       CloseCd();
       throw CdPlayerException("Error getting current position");
     }
     DWORD dwCurrentPosition = mciStatusParms.dwReturn;
-    DWORD dwRelativePosition = dwCurrentPosition - GetTrackStart(GetCurrentTrackNumber());
-    return ConvertToMilliseconds(dwRelativePosition);
+
+    if (_GetTrackStart(dwCurrentTrackNumber)) {
+      CloseCd();
+      throw CdPlayerException("Error getting track start");
+    }
+    DWORD dwCurrentTrackStartPosition = mciStatusParms.dwReturn;
+
+    return ConvertToMilliseconds(dwCurrentPosition) - ConvertToMilliseconds(dwCurrentTrackStartPosition);
   }
 
 
@@ -146,4 +165,10 @@ namespace mci {
     mciStatusParms.dwItem = MCI_STATUS_POSITION;
     return mciSendCommand(mciOpenParms.wDeviceID, MCI_STATUS, MCI_STATUS_ITEM, (DWORD_PTR) &mciStatusParms);
   }
+
+  DWORD CdPlayer::_SetMciSetFormat(DWORD dwTimeFormat) {
+    mciSetParms.dwTimeFormat = dwTimeFormat;
+    return mciSendCommand(mciOpenParms.wDeviceID, MCI_SET, MCI_SET_TIME_FORMAT, (DWORD_PTR) &mciSetParms);
+  }
+
 } // mci
