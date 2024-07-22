@@ -24,6 +24,7 @@ private:
   MCI_GENERIC_PARMS mciGenericParms;
   MCI_OPEN_PARMS mciOpenParms;
   MCI_PLAY_PARMS mciPlayParms;
+  MCI_SET_PARMS mciSetParms;
   DWORD _OpenCd();
   DWORD _GetTrackCount();
   DWORD _CloseCd();
@@ -37,6 +38,7 @@ private:
   DWORD _GetTrackLength(DWORD dwTrack);
   DWORD ConvertToMilliseconds(DWORD dwTime);
   DWORD _GetCurrentPosition();
+  DWORD _SetMciSetFormat(DWORD dwTimeFormat);
 };
 
 } // mci
