@@ -17,6 +17,9 @@ parentPort.on('message', async ({action, args}) => {
       mci.closeCd();
       parentPort.postMessage({resultType: 'closeCd', result: true});
       break;
+    case 'exit':
+      process.exit(0);
+      break;
     default:
       parentPort.postMessage({resultType: 'unknown'});
       break;
