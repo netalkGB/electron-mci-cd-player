@@ -80,18 +80,44 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     })
 
-    setInterval(async () => {
-        try {
-            const position = await window.mci.getCurrentPosition()
-            if (state.playing) {
-                document.querySelector('#position').innerText = formatMilliseconds(position)
-                document.querySelector('#duration').innerText = formatMilliseconds(await window.mci.getTrackLength(await window.mci.getCurrentTrackNumber()))
-            }
-            document.querySelector('#track').innerText = await window.mci.getCurrentTrackNumber()
-            document.querySelector('#total-track').innerText = await window.mci.getTrackCount()
-        } catch(e) {
-            console.error(e)
-        }
-    }, 50)
+    // setInterval(async () => {
+    //     console.log('interval')
+    //     try {
+    //         const position = await window.mci.getCurrentPosition()
+    //         if (state.playing) {
+    //             document.querySelector('#position').innerText = formatMilliseconds(position)
+    //             document.querySelector('#duration').innerText = formatMilliseconds(await window.mci.getTrackLength(await window.mci.getCurrentTrackNumber()))
+    //         }
+    //         document.querySelector('#track').innerText = await window.mci.getCurrentTrackNumber()
+    //         console.log(await window.mci.getCurrentTrackNumber())
+    //         document.querySelector('#total-track').innerText = await window.mci.getTrackCount()
+    //     } catch(e) {
+    //         console.error(e)
+    //     }
+    // }, 500)
+
+    // const polling = () => {
+    //     setTimeout(async () => {
+    //         try {
+    //             const position = await window.mci.getCurrentPosition()
+    //             if (state.playing) {
+    //                 document.querySelector('#position').innerText = formatMilliseconds(position)
+    //                 document.querySelector('#duration').innerText = formatMilliseconds(await window.mci.getTrackLength(await window.mci.getCurrentTrackNumber()))
+    //             }
+    //             document.querySelector('#track').innerText = await window.mci.getCurrentTrackNumber()
+    //             document.querySelector('#total-track').innerText = await window.mci.getTrackCount()
+    //         } catch(e) {
+    //             console.error(e)
+    //         }
+    //         polling()
+    //     }, 1000)
+    // }
+
+    // polling()
+    // window.mci.onBlockMessage((event, resultType) => {
+    //     console.log('Received message:', resultType);
+    //     // 必要な処理をここに追加
+    //   });
+  
 
 });
