@@ -80,38 +80,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     })
 
-    // setInterval(async () => {
-    //     console.log('interval')
-    //     try {
-    //         const position = await window.mci.getCurrentPosition()
-    //         if (state.playing) {
-    //             document.querySelector('#position').innerText = formatMilliseconds(position)
-    //             document.querySelector('#duration').innerText = formatMilliseconds(await window.mci.getTrackLength(await window.mci.getCurrentTrackNumber()))
-    //         }
-    //         document.querySelector('#track').innerText = await window.mci.getCurrentTrackNumber()
-    //         console.log(await window.mci.getCurrentTrackNumber())
-    //         document.querySelector('#total-track').innerText = await window.mci.getTrackCount()
-    //     } catch(e) {
-    //         console.error(e)
-    //     }
-    // }, 500)
+    setInterval( () => {
+        polling().then(() => {
+        }).catch((e) => {
+            console.log("error#1")
+            console.error(e)
+        })
+    }, 16)
 
-    // const polling = () => {
-    //     setTimeout(async () => {
-    //         try {
-    //             const position = await window.mci.getCurrentPosition()
-    //             if (state.playing) {
-    //                 document.querySelector('#position').innerText = formatMilliseconds(position)
-    //                 document.querySelector('#duration').innerText = formatMilliseconds(await window.mci.getTrackLength(await window.mci.getCurrentTrackNumber()))
-    //             }
-    //             document.querySelector('#track').innerText = await window.mci.getCurrentTrackNumber()
-    //             document.querySelector('#total-track').innerText = await window.mci.getTrackCount()
-    //         } catch(e) {
-    //             console.error(e)
-    //         }
-    //         polling()
-    //     }, 1000)
-    // }
+
 
     // polling()
     // window.mci.onBlockMessage((event, resultType) => {
@@ -121,3 +98,16 @@ document.addEventListener('DOMContentLoaded', async () => {
   
 
 });
+
+async function polling() {
+    try {
+        const position = await window.mci.getCurrentPosition()
+        document.querySelector('#position').innerText = formatMilliseconds(position)
+        document.querySelector('#duration').innerText = formatMilliseconds(await window.mci.getTrackLength(await window.mci.getCurrentTrackNumber()))
+        document.querySelector('#track').innerText = await window.mci.getCurrentTrackNumber()
+        document.querySelector('#total-track').innerText = await window.mci.getTrackCount()
+    } catch(e) {
+        console.log("error#2")
+        console.error(e)
+    }
+}

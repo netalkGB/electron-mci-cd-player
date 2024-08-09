@@ -12,7 +12,7 @@ const createWindow = () => {
       nodeIntegration: false,
     }
   })
-  // win.setMenuBarVisibility(false)
+  win.setMenuBarVisibility(false)
 
 
   ipcMain.handle('open-cd', (event, ...args) => {
