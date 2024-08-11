@@ -1,6 +1,6 @@
 const path = require('node:path')
 const { app, BrowserWindow, ipcMain } = require('electron')
-const mci = require('mci')
+const cdp = require('./cdp')
 const createWindow = () => {
   const win = new BrowserWindow({
     width: 530,
@@ -16,105 +16,64 @@ const createWindow = () => {
 
   ipcMain.handle('open-cd', (event, ...args) => {
     return new Promise((resolve, reject) => {
-      try {
-        resolve(mci.openCd())
-      } catch(e) {
-        reject(e)
-      }
+      cdp.openCd().then((r) => {resolve(r)}).catch((e) => {reject(e)})
     })
   })
 
   ipcMain.handle('get-track-count', (event, ...args) => {
     return new Promise((resolve, reject) => {
-      try {
-        resolve(mci.getTrackCount())
-      } catch(e) {
-        reject(e)
-      }
+      cdp.getTrackCount().then((r) => {resolve(r)}).catch((e) => {reject(e)})
     })
   })
 
   ipcMain.handle('close-cd', (event, ...args) => {
     return new Promise((resolve, reject) => {
-      try {
-        resolve(mci.closeCd())
-      } catch(e) {
-        reject(e)
-      }
+      cdp.closeCd().then((r) => {resolve(r)}).catch((e) => {reject(e)})
     })
   })
 
   ipcMain.handle('play', (event, ...args) => {
     return new Promise((resolve, reject) => {
-      try {
-        resolve(mci.play(...args))
-      } catch(e) {
-        reject(e)
-      }
+      cdp.play(...args).then((r) => {resolve(r)}).catch((e) => {reject(e)})
     })
   })
 
   ipcMain.handle('stop', (event, ...args) => {
     return new Promise((resolve, reject) => {
-      try {
-        resolve(mci.stop())
-      } catch(e) {
-        reject(e)
-      }
+      cdp.stop().then((r) => {resolve(r)}).catch((e) => {reject(e)})
     })
   })
 
 
   ipcMain.handle('get-current-position', (event, ...args) => {
     return new Promise((resolve, reject) => {
-      try {
-        resolve(mci.getCurrentPosition())
-      } catch(e) {
-        reject(e)
-      }
+      cdp.getCurrentPosition().then((r) => {resolve(r)}).catch((e) => {reject(e)})
     })
   })
 
   ipcMain.handle('get-track-length', (event, ...args) => {
     return new Promise((resolve, reject) => {
-      try {
-        resolve(mci.getTrackLength(...args))
-      } catch(e) {
-        reject(e)
-      }
+      cdp.getTrackLength(...args).then((r) => {resolve(r)}).catch((e) => {reject(e)})
     })
   })
 
   ipcMain.handle('get-current-track-number', (event, ...args) => {
     return new Promise((resolve, reject) => {
-      try {
-        resolve(mci.getCurrentTrackNumber())
-      } catch(e) {
-        reject(e)
-      }
+      cdp.getCurrentTrackNumber().then((r) => {resolve(r)}).catch((e) => {reject(e)})
     })
   })
 
   ipcMain.handle('pause', (event, ...args) => {
     return new Promise((resolve, reject) => {
-      try {
-        resolve(mci.pause())
-      } catch(e) {
-        reject(e)
-      }
+      cdp.pause().then((r) => {resolve(r)}).catch((e) => {reject(e)})
     })
   })
 
   ipcMain.handle('resume', (event, ...args) => {
     return new Promise((resolve, reject) => {
-      try {
-        resolve(mci.resume())
-      } catch(e) {
-        reject(e)
-      }
+      cdp.resume().then((r) => {resolve(r)}).catch((e) => {reject(e)})
     })
   })
-
 
   win.loadFile(path.join(__dirname, '..', 'renderer', 'index.html'))
 }
@@ -123,8 +82,8 @@ app.whenReady().then(() => {
   createWindow()
 })
 
-app.on('window-all-closed', () => {
-  mci.closeCd()
+app.on('window-all-closed', async () => {
+  await cdp.closeCd()
   if (process.platform !== 'darwin') app.quit()
 })
 
