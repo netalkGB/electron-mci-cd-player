@@ -1,5 +1,8 @@
-const {parentPort} = require('worker_threads');
-const mci = require('mci')
+/* eslint-disable */
+// @ts-nocheck
+
+import { parentPort } from 'worker_threads';
+import mci from 'mci';
 parentPort.setMaxListeners(1024);
 parentPort.on('message', async ({action, args}) => {
   switch (action) {

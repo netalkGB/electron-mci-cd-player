@@ -1,18 +1,24 @@
-const path = require('node:path')
-const { app, BrowserWindow, ipcMain } = require('electron')
-const cdp = require('./cdp')
+/* eslint-disable */
+// @ts-nocheck
+import { app, BrowserWindow, ipcMain } from 'electron'
+import path from 'path'
+import * as cdp from './cdp'
+import { fileURLToPath } from 'url'
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
 const createWindow = () => {
   const win = new BrowserWindow({
     width: 530,
     height: 80,
     webPreferences: {
-      preload: path.join(__dirname, '..', 'preload', 'preload.js'),
+      preload: path.join(__dirname, '..', 'preload', 'preload.mjs'),
       contextIsolation: true,
-      enableRemoteModule: false,
+      // enableRemoteModule: false,
       nodeIntegration: false
     }
   })
-  win.setMenuBarVisibility(false)
+  win.setMenuBarVisibility(true)
 
   ipcMain.handle('open-cd', (event, ...args) => {
     return new Promise((resolve, reject) => {
@@ -75,16 +81,15 @@ const createWindow = () => {
     })
   })
 
-  win.loadFile(path.join(__dirname, '..', 'renderer', 'index.html'))
+  return win
 }
 
 app.whenReady().then(() => {
-  createWindow()
+  const win = createWindow()
+
+  if (process.env.VITE_DEV_SERVER_URL) {
+    win.loadURL(process.env.VITE_DEV_SERVER_URL)
+  } else {
+    win.loadFile('dist/index.html');
+  }
 })
-
-app.on('window-all-closed', async () => {
-  await cdp.closeCd()
-  if (process.platform !== 'darwin') app.quit()
-})
-
-
