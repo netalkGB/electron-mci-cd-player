@@ -16,6 +16,10 @@ const formatMilliseconds = (ms) => {
 
   return `${minutes}:${formattedSeconds}.${formattedMilliseconds}`;
 }
+
+const driveLetters = mci.getDriveLetters()
+console.log(driveLetters)
+
 const trackCount = mci.getTrackCount()
 console.log(trackCount)
 let trackList = [];

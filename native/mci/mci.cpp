@@ -1,8 +1,10 @@
+#include <vector>
 #include <napi.h>
 #include <windows.h>
 
 #include "CdPlayer.h"
 #include "CdPlayerException.h"
+#include "CdPlayerUtil.h"
 
 #define DRIVE_LETTER "D:"
 
@@ -10,6 +12,16 @@
 
 namespace mci {
   CdPlayer cdPlayer;
+
+  Napi::Value GetDriveLetters(const Napi::CallbackInfo& info) {
+    Napi::Env env = info.Env();
+    std::vector<char> driveLetters = CdPlayerUtil::GetDriveLetters();
+    Napi::Array result = Napi::Array::New(env, driveLetters.size());
+    for (size_t i = 0; i < driveLetters.size(); ++i) {
+      result[i] = Napi::String::New(env, std::string(1, driveLetters[i]));
+    }
+    return result;
+  }
 
   Napi::Value OpenCd(const Napi::CallbackInfo& info) {
     return Napi::Boolean::New(info.Env(), cdPlayer.OpenCd());
@@ -96,6 +108,7 @@ namespace mci {
   }
 
   Napi::Object Init(Napi::Env env, Napi::Object exports) {
+    exports.Set(Napi::String::New(env, "getDriveLetters"), Napi::Function::New(env, GetDriveLetters));
     exports.Set(Napi::String::New(env, "openCd"), Napi::Function::New(env, OpenCd));
     exports.Set(Napi::String::New(env, "getTrackCount"), Napi::Function::New(env, GetTrackCount));
     exports.Set(Napi::String::New(env, "closeCd"), Napi::Function::New(env, CloseCd));
