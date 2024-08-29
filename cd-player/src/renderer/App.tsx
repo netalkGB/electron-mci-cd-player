@@ -26,6 +26,7 @@ function App() {
     }
 
     const initialize = async () => {
+      console.log(await window.mci.getDriveLetters())
       await window.mci.openCd()
 
       const trackCount = await window.mci.getTrackCount()

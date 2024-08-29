@@ -14,4 +14,5 @@ contextBridge.exposeInMainWorld('mci', {
     getCurrentTrackNumber: () => { return ipcRenderer.invoke('get-current-track-number')},
     pause: () => { return ipcRenderer.invoke('pause')},
     resume: () => { return ipcRenderer.invoke('resume')},
+    getDriveLetters: () => { return ipcRenderer.invoke('get-drive-letters')},
 })

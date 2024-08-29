@@ -81,6 +81,12 @@ const createWindow = () => {
     })
   })
 
+  ipcMain.handle('get-drive-letters', (event, ...args) => {
+    return new Promise((resolve, reject) => {
+      cdp.getDriveLetters().then((r) => {resolve(r)}).catch((e) => {reject(e)})
+    })
+  })
+
   return win
 }
 

@@ -58,6 +58,13 @@ parentPort.on('message', async ({action, args}) => {
         parentPort.postMessage({resultType: 'getCurrentPosition', result: null, error});
       }
       break;
+    case 'getDriveLetters':
+      try {
+        parentPort.postMessage({resultType: 'getDriveLetters', result: mci.getDriveLetters(), error: null});
+      } catch (error) {
+        parentPort.postMessage({resultType: 'getDriveLetters', result: null, error});
+      }
+      break;
     default:
       parentPort.postMessage({resultType: 'unknown'});
       break;

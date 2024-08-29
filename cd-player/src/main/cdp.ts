@@ -20,10 +20,7 @@ export const startWorker = (): void => {
 }
 
 export const openCd = (): Promise<any> => {
-    worker = new Worker(path.join(__dirname, 'worker', 'cdpWorker.js'));
-    worker.setMaxListeners(1024);
-
-    return new Promise((resolve, reject) => {
+   return new Promise((resolve, reject) => {
         const listener = ({ resultType, error, result }: { resultType: string, error: any, result: any }) => {
             if (resultType !== 'openCd') {
                 return;
@@ -181,6 +178,20 @@ export const getCurrentPosition = (): Promise<any> => (
         worker.on('message', listener);
         worker.postMessage({ action: 'getCurrentPosition' });
     })
+)
+
+export const getDriveLetters = (): Promise<any> => (
+  new Promise((resolve, reject) => {
+    const listener = ({ resultType, error, result }: { resultType: string, error: any, result: any }) => {
+      if (resultType !== 'getDriveLetters') {
+        return;
+      }
+      removeListener(listener);
+      resolve(result);
+    }
+    worker.on('message', listener);
+    worker.postMessage({ action: 'getDriveLetters' });
+  })
 )
 
 export { worker };
