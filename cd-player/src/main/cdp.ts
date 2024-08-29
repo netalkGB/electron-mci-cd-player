@@ -14,6 +14,11 @@ const removeListener = (listener: (message: { resultType: string, error: any, re
     worker.removeListener('message', listener);
 }
 
+export const startWorker = (): void => {
+  worker = new Worker(path.join(__dirname, 'worker', 'cdpWorker.js'));
+  worker.setMaxListeners(1024);
+}
+
 export const openCd = (): Promise<any> => {
     worker = new Worker(path.join(__dirname, 'worker', 'cdpWorker.js'));
     worker.setMaxListeners(1024);

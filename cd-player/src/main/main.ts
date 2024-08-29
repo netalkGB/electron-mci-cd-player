@@ -85,6 +85,7 @@ const createWindow = () => {
 }
 
 app.whenReady().then(() => {
+  cdp.startWorker()
   const win = createWindow()
 
   if (process.env.VITE_DEV_SERVER_URL) {
