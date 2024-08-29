@@ -173,7 +173,7 @@ export const getCurrentPosition = (): Promise<any> => (
             }
             resolve(result);
         }
-        worker.once('message', listener);
+        worker.on('message', listener);
         worker.postMessage({ action: 'getCurrentPosition' });
     })
 )
