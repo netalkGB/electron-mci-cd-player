@@ -3,7 +3,11 @@ const mci = require('./build/Release/mci')
 const driveLetters = mci.getDriveLetters()
 console.log(driveLetters)
 
-if (!mci.openCd(driveLetters[1])) {
+for(let letter of driveLetters) {
+  console.log(`${letter}: ${mci.isCdInserted(letter)}`)
+}
+
+if (!mci.openCd(driveLetters[0])) {
   console.log("Failed to open CD")
   process.exit(-1)
 }

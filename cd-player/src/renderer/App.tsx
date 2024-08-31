@@ -44,6 +44,11 @@ function App() {
     if (!event.target.value || event.target.value === '--') {
       return
     }
+    console.log(event.target.value)
+    console.log('window.mci.isCdInserted()' + await window.mci.isCdInserted(event.target.value))
+    if (!(await window.mci.isCdInserted(event.target.value))) {
+      return
+    }
 
     dispatch({ type: 'SET_ACTIVE_DRIVE_LETTER', payload: event.target.value })
     console.log(event.target.value)

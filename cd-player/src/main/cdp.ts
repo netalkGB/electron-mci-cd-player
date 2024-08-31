@@ -193,4 +193,18 @@ export const getDriveLetters = (): Promise<any> => (
   })
 )
 
+export const isCdInserted = (...args): Promise<any> => (
+  new Promise((resolve, reject) => {
+    const listener = ({ resultType, error, result }: { resultType: string, error: any, result: any }) => {
+      if (resultType !== 'isCdInserted') {
+        return;
+      }
+      removeListener(listener);
+      resolve(result);
+    }
+    worker.on('message', listener);
+    worker.postMessage({ action: 'isCdInserted', args: [...args] });
+  })
+)
+
 export { worker };

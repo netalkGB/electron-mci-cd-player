@@ -87,6 +87,12 @@ const createWindow = () => {
     })
   })
 
+  ipcMain.handle('is-cd-inserted', (event, ...args) => {
+    return new Promise((resolve, reject) => {
+      cdp.isCdInserted(...args).then((r) => {resolve(r)}).catch((e) => {reject(e)})
+    })
+  })
+
   return win
 }
 

@@ -65,6 +65,13 @@ parentPort.on('message', async ({action, args}) => {
         parentPort.postMessage({resultType: 'getDriveLetters', result: null, error});
       }
       break;
+    case 'isCdInserted':
+      try {
+        parentPort.postMessage({resultType: 'isCdInserted', result: mci.isCdInserted(...args), error: null});
+      } catch (error) {
+        parentPort.postMessage({resultType: 'isCdInserted', result: null, error});
+      }
+      break;
     default:
       parentPort.postMessage({resultType: 'unknown'});
       break;

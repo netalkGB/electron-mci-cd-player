@@ -8,6 +8,7 @@ namespace mci {
 class CdPlayerUtil {
 public:
   static std::vector<std::string> GetDriveLetters();
+  static boolean IsCdInserted(const char *driveLetter);
 };
 
 }

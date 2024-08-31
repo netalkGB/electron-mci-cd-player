@@ -21,6 +21,16 @@ namespace mci {
     return result;
   }
 
+  Napi::Value IsCdInserted(const Napi::CallbackInfo& info) {
+    Napi::Env env = info.Env();
+    if (info.Length() < 1 || !info[0].IsString()) {
+      Napi::TypeError::New(env, "Expected a string as the first argument").ThrowAsJavaScriptException();
+      return env.Null();
+    }
+    std::string driveLetter = info[0].As<Napi::String>().Utf8Value();
+    return Napi::Boolean::New(env, CdPlayerUtil::IsCdInserted(driveLetter.c_str()));
+  }
+
   Napi::Value OpenCd(const Napi::CallbackInfo& info) {
     Napi::Env env = info.Env();
     if (info.Length() < 1 || !info[0].IsString()) {
@@ -117,6 +127,7 @@ namespace mci {
   }
 
   Napi::Object Init(Napi::Env env, Napi::Object exports) {
+    exports.Set(Napi::String::New(env, "isCdInserted"), Napi::Function::New(env, IsCdInserted));
     exports.Set(Napi::String::New(env, "getDriveLetters"), Napi::Function::New(env, GetDriveLetters));
     exports.Set(Napi::String::New(env, "openCd"), Napi::Function::New(env, OpenCd));
     exports.Set(Napi::String::New(env, "getTrackCount"), Napi::Function::New(env, GetTrackCount));
