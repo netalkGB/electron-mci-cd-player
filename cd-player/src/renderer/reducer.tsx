@@ -5,6 +5,9 @@ export interface PlayerState {
   currentTrackDuration: number;
   playState: 'playing' | 'paused' | 'stopped';
   trackList: CdTrack[];
+  availableDriveLetters: string[];
+  activeDriveLetter: string | null;
+  timerId: NodeJS.Timeout | null;
 }
 
 export const initialState: PlayerState = {
@@ -14,6 +17,9 @@ export const initialState: PlayerState = {
   currentTrackDuration: 0,
   playState: 'stopped',
   trackList: [],
+  availableDriveLetters: ['--'],
+  activeDriveLetter: null,
+  timerId: null,
 }
 
 export type Action =
@@ -24,6 +30,9 @@ export type Action =
   | { type: 'SET_TOTAL_TRACK_LENGTH'; payload: number }
   | { type: 'SET_PLAY_STATE'; payload: 'playing' | 'paused' | 'stopped' }
   | { type: 'SET_TRACK_LIST'; payload: CdTrack[] }
+  | { type: 'SET_AVAILABLE_DRIVE_LETTERS'; payload: string[] }
+  | { type: 'SET_ACTIVE_DRIVE_LETTER'; payload: string }
+  | { type: 'SET_TIMER_ID'; payload: NodeJS.Timeout }
 
 export const playerReducer = (state: PlayerState, action: Action): PlayerState => {
   switch (action.type) {
@@ -39,6 +48,12 @@ export const playerReducer = (state: PlayerState, action: Action): PlayerState =
     return { ...state, playState: action.payload }
   case 'SET_TRACK_LIST':
     return { ...state, trackList: action.payload }
+  case 'SET_AVAILABLE_DRIVE_LETTERS':
+    return { ...state, availableDriveLetters: action.payload }
+  case 'SET_ACTIVE_DRIVE_LETTER':
+    return { ...state, activeDriveLetter: action.payload }
+  case 'SET_TIMER_ID':
+    return { ...state, timerId: action.payload }
   default:
     return state
   }

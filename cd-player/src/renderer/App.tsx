@@ -26,35 +26,63 @@ function App() {
     }
 
     const initialize = async () => {
-      console.log(await window.mci.getDriveLetters())
-      await window.mci.openCd()
-
-      const trackCount = await window.mci.getTrackCount()
-      let trackList: CdTrackp[] = [];
-      for (let i = 0; i < trackCount; i++) {
-        trackList = [...trackList, {number: i + 1, length: await mci.getTrackLength(i + 1)}]
-      }
-      dispatch({type: 'SET_TRACK_LIST', payload: trackList})
-
-      setInterval(async () => {
-        try {
-          dispatch({type: 'SET_CURRENT_POSITION', payload: await window.mci.getCurrentPosition()})
-          dispatch({type: 'SET_CURRENT_DURATION', payload: await window.mci.getTrackLength(await window.mci.getCurrentTrackNumber())})
-          dispatch({type: 'SET_CURRENT_TRACK_NUMBER', payload: await window.mci.getCurrentTrackNumber()})
-          dispatch({type: 'SET_TOTAL_TRACK_COUNT', payload: await window.mci.getTrackCount()})
-        } catch (e) {
-          console.error(e)
-        }
-      }, 10)
+      const availableDriveLetters = await window.mci.getDriveLetters()
+      dispatch({type: 'SET_AVAILABLE_DRIVE_LETTERS', payload: ['--', ...availableDriveLetters]})
     }
     initialize()
     first = false
   }, []);
 
+  async function handleSelectDriveLetter(event) {
+    if (state.timerId) {
+      clearInterval(state.timerId)
+      dispatch({type: 'SET_TIMER_ID', payload: null})
+      await window.mci.closeCd()
+      console.log('closed')
+    }
 
+    if (!event.target.value || event.target.value === '--') {
+      return
+    }
+
+    dispatch({ type: 'SET_ACTIVE_DRIVE_LETTER', payload: event.target.value })
+    console.log(event.target.value)
+    await window.mci.openCd(event.target.value)
+    console.log('opened')
+
+    const trackCount = await window.mci.getTrackCount()
+    console.log('trackCount', trackCount)
+    let trackList: CdTrackp[] = [];
+    for (let i = 0; i < trackCount; i++) {
+      trackList = [...trackList, {number: i + 1, length: await mci.getTrackLength(i + 1)}]
+    }
+    dispatch({type: 'SET_TRACK_LIST', payload: trackList})
+
+    const timerId = setInterval(async () => {
+      try {
+        dispatch({type: 'SET_CURRENT_POSITION', payload: await window.mci.getCurrentPosition()})
+        dispatch({type: 'SET_CURRENT_DURATION', payload: await window.mci.getTrackLength(await window.mci.getCurrentTrackNumber())})
+        dispatch({type: 'SET_CURRENT_TRACK_NUMBER', payload: await window.mci.getCurrentTrackNumber()})
+        dispatch({type: 'SET_TOTAL_TRACK_COUNT', payload: await window.mci.getTrackCount()})
+      } catch (e) {
+        console.error(e)
+      }
+    }, 10)
+    dispatch({type: 'SET_TIMER_ID', payload: timerId})
+  }
 
   return (
     <>
+      <select onChange={(event) => {
+        handleSelectDriveLetter(event).then(r => r)
+      }}>
+      {
+        state.availableDriveLetters.map((letter, idx) => (
+          <option key={idx} value={letter}>{letter}</option>
+        ))
+      }
+      </select>
+
       <button onClick={async () => {
         await window.mci.play(state.currentTrackNumber)
         dispatch({type: 'SET_PLAY_STATE', payload: 'playing'})
