@@ -34,6 +34,10 @@ function App() {
   }, []);
 
   async function handleSelectDriveLetter(event) {
+    await setupDrive(event.target.value)
+  }
+
+  async function setupDrive(driveLetter: string) {
     if (state.timerId) {
       clearInterval(state.timerId)
       dispatch({type: 'SET_TIMER_ID', payload: null})
@@ -41,18 +45,18 @@ function App() {
       console.log('closed')
     }
 
-    if (!event.target.value || event.target.value === '--') {
+    if (!driveLetter || driveLetter === '--') {
       return
     }
-    console.log(event.target.value)
-    console.log('window.mci.isCdInserted()' + await window.mci.isCdInserted(event.target.value))
-    if (!(await window.mci.isCdInserted(event.target.value))) {
+    console.log(driveLetter)
+    console.log('window.mci.isCdInserted()' + await window.mci.isCdInserted(driveLetter))
+    if (!(await window.mci.isCdInserted(driveLetter))) {
       return
     }
 
-    dispatch({ type: 'SET_ACTIVE_DRIVE_LETTER', payload: event.target.value })
-    console.log(event.target.value)
-    await window.mci.openCd(event.target.value)
+    dispatch({ type: 'SET_ACTIVE_DRIVE_LETTER', payload: driveLetter })
+    console.log(driveLetter)
+    await window.mci.openCd(driveLetter)
     console.log('opened')
 
     const trackCount = await window.mci.getTrackCount()
@@ -81,15 +85,15 @@ function App() {
       <select onChange={(event) => {
         handleSelectDriveLetter(event).then(r => r)
       }}>
-      {
-        state.availableDriveLetters.map((letter, idx) => (
-          <option key={idx} value={letter}>{letter}</option>
-        ))
-      }
+        {
+          state.availableDriveLetters.map((letter, idx) => (
+            <option key={idx} value={letter}>{letter}</option>
+          ))
+        }
       </select>
 
       <button onClick={async () => {
-        await window.mci.play(state.currentTrackNumber)
+         await window.mci.play(state.currentTrackNumber)
         dispatch({type: 'SET_PLAY_STATE', payload: 'playing'})
       }}>Play
       </button>
@@ -117,12 +121,22 @@ function App() {
       }}>Previous
       </button>
       <button onClick={async () => {
-          const currentTrackNumber = state.currentTrackNumber
-          if (currentTrackNumber === state.totalTrackCount) {
-            return
-          }
-          await window.mci.play(currentTrackNumber + 1)
-        }}>Next
+        const currentTrackNumber = state.currentTrackNumber
+        if (currentTrackNumber === state.totalTrackCount) {
+          return
+        }
+        await window.mci.play(currentTrackNumber + 1)
+      }}>Next
+      </button>
+      <button onClick={async () => {
+        await window.mci.ejectCd(state.activeDriveLetter)
+        if (state.timerId) {
+          clearInterval(state.timerId)
+          dispatch({type: 'SET_TIMER_ID', payload: null})
+          await window.mci.closeCd()
+          console.log('closed')
+        }
+      }}>Eject
       </button>
       <div>{state.currentTrackNumber}/{state.totalTrackCount}</div>
 
@@ -132,7 +146,7 @@ function App() {
           : <></>
       }
 
-      <br />
+      <br/>
       {
         state.trackList.map((track, idx) => (
           <div key={idx}>

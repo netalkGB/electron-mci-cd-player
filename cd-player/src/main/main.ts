@@ -93,6 +93,12 @@ const createWindow = () => {
     })
   })
 
+  ipcMain.handle('eject-cd', (event, ...args) => {
+    return new Promise((resolve, reject) => {
+      cdp.ejectCd(...args).then((r) => {resolve(r)}).catch((e) => {reject(e)})
+    })
+  })
+
   return win
 }
 

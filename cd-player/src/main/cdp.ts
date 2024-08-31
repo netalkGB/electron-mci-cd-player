@@ -207,4 +207,18 @@ export const isCdInserted = (...args): Promise<any> => (
   })
 )
 
+export const ejectCd = (driveLetter: string): Promise<any> => (
+  new Promise((resolve, reject) => {
+    const listener = ({ resultType, error, result }: { resultType: string, error: any, result: any }) => {
+      if (resultType !== 'ejectCd') {
+        return;
+      }
+      removeListener(listener);
+      resolve(result);
+    }
+    worker.on('message', listener);
+    worker.postMessage({ action: 'ejectCd', args: [driveLetter] });
+  })
+)
+
 export { worker };

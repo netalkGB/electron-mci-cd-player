@@ -19,6 +19,7 @@ public:
   int GetCurrentTrackNumber();
   unsigned long GetTrackLength(int track);
   unsigned long GetCurrentPosition();
+  bool EjectCd();
 private:
   MCI_STATUS_PARMS mciStatusParms;
   MCI_GENERIC_PARMS mciGenericParms;
@@ -39,6 +40,7 @@ private:
   DWORD ConvertToMilliseconds(DWORD dwTime);
   DWORD _GetCurrentPosition();
   DWORD _SetMciSetFormat(DWORD dwTimeFormat);
+  DWORD _EjectCd();
 };
 
 } // mci

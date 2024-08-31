@@ -68,6 +68,10 @@ process.stdin.on('data', (input) => {
       case 'l':
         console.log(formatMilliseconds(mci.getTrackLength(mci.getCurrentTrackNumber())))
         break
+      case 'e':
+        mci.ejectCd();
+        mci.closeCd();
+        break
     }
   }
 })

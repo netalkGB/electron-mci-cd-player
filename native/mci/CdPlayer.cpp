@@ -95,6 +95,9 @@ namespace mci {
     return ConvertToMilliseconds(dwCurrentPosition) - ConvertToMilliseconds(dwCurrentTrackStartPosition);
   }
 
+  bool CdPlayer::EjectCd() {
+    return _EjectCd() == 1;
+  }
 
   DWORD CdPlayer::_OpenCd(const LPCSTR *lpstrDriveLetter) {
     mciOpenParms.lpstrDeviceType = "cdaudio";
@@ -168,6 +171,10 @@ namespace mci {
   DWORD CdPlayer::_SetMciSetFormat(DWORD dwTimeFormat) {
     mciSetParms.dwTimeFormat = dwTimeFormat;
     return mciSendCommand(mciOpenParms.wDeviceID, MCI_SET, MCI_SET_TIME_FORMAT, (DWORD_PTR) &mciSetParms);
+  }
+
+  DWORD CdPlayer::_EjectCd() {
+    return mciSendCommand(mciOpenParms.wDeviceID, MCI_SET, MCI_SET_DOOR_OPEN, (DWORD_PTR) &mciGenericParms);
   }
 
 } // mci

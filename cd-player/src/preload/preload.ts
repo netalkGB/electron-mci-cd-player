@@ -16,4 +16,5 @@ contextBridge.exposeInMainWorld('mci', {
     resume: () => { return ipcRenderer.invoke('resume')},
     getDriveLetters: () => { return ipcRenderer.invoke('get-drive-letters')},
     isCdInserted: (...args) => { return ipcRenderer.invoke('is-cd-inserted', ...args)},
+    ejectCd: (driveLetter) => { return ipcRenderer.invoke('eject-cd', driveLetter)},
 })

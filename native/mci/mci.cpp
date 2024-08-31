@@ -31,6 +31,10 @@ namespace mci {
     return Napi::Boolean::New(env, CdPlayerUtil::IsCdInserted(driveLetter.c_str()));
   }
 
+  Napi::Value EjectCd(const Napi::CallbackInfo& info) {
+    return Napi::Boolean::New(info.Env(), cdPlayer.EjectCd());
+  }
+
   Napi::Value OpenCd(const Napi::CallbackInfo& info) {
     Napi::Env env = info.Env();
     if (info.Length() < 1 || !info[0].IsString()) {
@@ -127,6 +131,7 @@ namespace mci {
   }
 
   Napi::Object Init(Napi::Env env, Napi::Object exports) {
+    exports.Set(Napi::String::New(env, "ejectCd"), Napi::Function::New(env, EjectCd));
     exports.Set(Napi::String::New(env, "isCdInserted"), Napi::Function::New(env, IsCdInserted));
     exports.Set(Napi::String::New(env, "getDriveLetters"), Napi::Function::New(env, GetDriveLetters));
     exports.Set(Napi::String::New(env, "openCd"), Napi::Function::New(env, OpenCd));

@@ -72,6 +72,13 @@ parentPort.on('message', async ({action, args}) => {
         parentPort.postMessage({resultType: 'isCdInserted', result: null, error});
       }
       break;
+    case 'ejectCd':
+      try {
+        parentPort.postMessage({resultType: 'ejectCd', result: mci.ejectCd(...args), error: null});
+      } catch (error) {
+        parentPort.postMessage({resultType: 'ejectCd', result: false, error});
+      }
+      break;
     default:
       parentPort.postMessage({resultType: 'unknown'});
       break;
