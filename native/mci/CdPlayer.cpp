@@ -1,7 +1,6 @@
 #include <windows.h>
 #include "CdPlayer.h"
 #include "CdPlayerException.h"
-#define DRIVE_LETTER "D:"
 
 namespace mci {
   CdPlayer::CdPlayer()
@@ -17,8 +16,8 @@ namespace mci {
     CloseCd();
   }
 
-  bool CdPlayer::OpenCd() {
-    return _OpenCd() == 0;
+  bool CdPlayer::OpenCd(const char *driveLetter) {
+    return _OpenCd((LPCSTR*)&driveLetter) == 0;
   }
 
   int CdPlayer::GetTrackCount() {
@@ -97,10 +96,10 @@ namespace mci {
   }
 
 
-  DWORD CdPlayer::_OpenCd() {
+  DWORD CdPlayer::_OpenCd(const LPCSTR *lpstrDriveLetter) {
     mciOpenParms.lpstrDeviceType = "cdaudio";
-    mciOpenParms.lpstrElementName =  DRIVE_LETTER;
-    return mciSendCommand(0, MCI_OPEN, MCI_OPEN_TYPE, (DWORD_PTR) &mciOpenParms);
+    mciOpenParms.lpstrElementName = *lpstrDriveLetter;
+    return mciSendCommand(0, MCI_OPEN, MCI_OPEN_TYPE | MCI_OPEN_ELEMENT, (DWORD_PTR)&mciOpenParms);
   }
 
   DWORD CdPlayer::_GetTrackCount() {

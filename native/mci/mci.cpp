@@ -6,8 +6,6 @@
 #include "CdPlayerException.h"
 #include "CdPlayerUtil.h"
 
-#define DRIVE_LETTER "D:"
-
 #pragma comment(lib, "winmm.lib")
 
 namespace mci {
@@ -15,16 +13,27 @@ namespace mci {
 
   Napi::Value GetDriveLetters(const Napi::CallbackInfo& info) {
     Napi::Env env = info.Env();
-    std::vector<char> driveLetters = CdPlayerUtil::GetDriveLetters();
+    std::vector<std::string> driveLetters = CdPlayerUtil::GetDriveLetters();
     Napi::Array result = Napi::Array::New(env, driveLetters.size());
-    for (size_t i = 0; i < driveLetters.size(); ++i) {
-      result[i] = Napi::String::New(env, std::string(1, driveLetters[i]));
+    for (size_t i = 0; i < driveLetters.size(); i++) {
+      result[i] = Napi::String::New(env, driveLetters[i]);
     }
     return result;
   }
 
   Napi::Value OpenCd(const Napi::CallbackInfo& info) {
-    return Napi::Boolean::New(info.Env(), cdPlayer.OpenCd());
+    Napi::Env env = info.Env();
+    if (info.Length() < 1 || !info[0].IsString()) {
+      Napi::TypeError::New(env, "Expected a string as the first argument").ThrowAsJavaScriptException();
+      return env.Null();
+    }
+    std::string driveLetter = info[0].As<Napi::String>().Utf8Value();
+    try {
+      return Napi::Boolean::New(env, cdPlayer.OpenCd(const_cast<char *>(driveLetter.c_str())));
+    } catch (CdPlayerException &e) {
+      Napi::TypeError::New(env, "Error opening CD").ThrowAsJavaScriptException();
+      return env.Null();
+    }
   }
 
   Napi::Value GetTrackCount(const Napi::CallbackInfo& info) {

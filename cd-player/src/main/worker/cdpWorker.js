@@ -7,7 +7,7 @@ parentPort.setMaxListeners(1024);
 parentPort.on('message', async ({action, args}) => {
   switch (action) {
     case 'openCd':
-      parentPort.postMessage({resultType: 'openCd', result: mci.openCd(),  error: null});
+      parentPort.postMessage({resultType: 'openCd', result: mci.openCd(...args),  error: null});
       break;
     case 'getTrackCount':
       try {

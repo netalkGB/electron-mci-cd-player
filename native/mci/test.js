@@ -1,6 +1,9 @@
 const mci = require('./build/Release/mci')
 
-if (!mci.openCd()) {
+const driveLetters = mci.getDriveLetters()
+console.log(driveLetters)
+
+if (!mci.openCd(driveLetters[1])) {
   console.log("Failed to open CD")
   process.exit(-1)
 }
@@ -17,8 +20,6 @@ const formatMilliseconds = (ms) => {
   return `${minutes}:${formattedSeconds}.${formattedMilliseconds}`;
 }
 
-const driveLetters = mci.getDriveLetters()
-console.log(driveLetters)
 
 const trackCount = mci.getTrackCount()
 console.log(trackCount)

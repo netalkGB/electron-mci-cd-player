@@ -4,7 +4,7 @@
 const { contextBridge, ipcRenderer } = require('electron')
 
 contextBridge.exposeInMainWorld('mci', {
-    openCd: () => {ipcRenderer.invoke('open-cd')},
+    openCd: (driveLetter: string) => {ipcRenderer.invoke('open-cd', driveLetter)},
     getTrackCount: () => { return ipcRenderer.invoke('get-track-count')},
     closeCd: () => { return ipcRenderer.invoke('close-cd')},
     play: (track) => { return ipcRenderer.invoke('play', track)},

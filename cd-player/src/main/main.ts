@@ -22,7 +22,7 @@ const createWindow = () => {
 
   ipcMain.handle('open-cd', (event, ...args) => {
     return new Promise((resolve, reject) => {
-      cdp.openCd().then((r) => {resolve(r)}).catch((e) => {reject(e)})
+      cdp.openCd(...args).then((r) => {resolve(r)}).catch((e) => {reject(e)})
     })
   })
 

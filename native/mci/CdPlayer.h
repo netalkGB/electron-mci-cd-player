@@ -9,7 +9,7 @@ class CdPlayer {
 public:
   CdPlayer();
   ~CdPlayer();
-  bool OpenCd();
+  bool OpenCd(const char *driveLetter);
   int GetTrackCount();
   bool CloseCd();
   void Play(int track);
@@ -25,7 +25,7 @@ private:
   MCI_OPEN_PARMS mciOpenParms;
   MCI_PLAY_PARMS mciPlayParms;
   MCI_SET_PARMS mciSetParms;
-  DWORD _OpenCd();
+  DWORD _OpenCd(const LPCSTR *lpstrDriveLetter);
   DWORD _GetTrackCount();
   DWORD _CloseCd();
   DWORD _GetTrackStart(DWORD dwTrack);

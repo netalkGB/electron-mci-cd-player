@@ -19,7 +19,7 @@ export const startWorker = (): void => {
   worker.setMaxListeners(1024);
 }
 
-export const openCd = (): Promise<any> => {
+export const openCd = (...args): Promise<any> => {
    return new Promise((resolve, reject) => {
         const listener = ({ resultType, error, result }: { resultType: string, error: any, result: any }) => {
             if (resultType !== 'openCd') {
@@ -29,7 +29,7 @@ export const openCd = (): Promise<any> => {
             resolve(result);
         }
         worker.on('message', listener);
-        worker.postMessage({ action: 'openCd' });
+        worker.postMessage({ action: 'openCd', args: [...args] });
     });
 }
 
@@ -53,13 +53,12 @@ export const getTrackCount = (): Promise<any> => (
 
 export const closeCd = (): Promise<any> => (
     new Promise((resolve, reject) => {
-        const listener = ({ resultType, error, result }: { resultType: string, error: any, result: any }) => {
+        const listener = async ({ resultType, error, result }: { resultType: string, error: any, result: any }) => {
             if (resultType !== 'closeCd') {
                 return;
             }
             removeListener(listener);
             resolve(result);
-            worker.terminate();
         }
         worker.on('message', listener);
         worker.postMessage({ action: 'closeCd' });
