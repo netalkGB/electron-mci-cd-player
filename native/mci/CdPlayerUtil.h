@@ -7,7 +7,7 @@ namespace mci {
 
 class CdPlayerUtil {
 public:
-  static std::vector<char> GetDriveLetters();
+  static std::vector<std::string> GetDriveLetters();
 };
 
 }
