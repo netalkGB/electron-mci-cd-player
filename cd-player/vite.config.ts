@@ -18,7 +18,9 @@ export default defineConfig(({ command }) => {
     },
     plugins: [
       checker({
-        typescript: true,
+        typescript: {
+          tsconfigPath: './tsconfig.app.json'
+        },
         eslint: {
           lintCommand: 'eslint .',
           useFlatConfig: true,
@@ -61,7 +63,6 @@ export default defineConfig(({ command }) => {
             }
           }
         },
-        // renderer: {},
       }),
     ],
   }
