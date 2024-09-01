@@ -1,6 +1,3 @@
-/* eslint-disable */
-// @ts-nocheck
-
 import { Worker } from 'worker_threads';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -10,8 +7,15 @@ const __dirname = path.dirname(__filename);
 
 let worker: Worker;
 
-const removeListener = (listener: (message: { resultType: string, error: any, result: any }) => void): void => {
-    worker.removeListener('message', listener);
+/* eslint-disable @typescript-eslint/no-explicit-any */
+interface Message {
+  resultType: string;
+  error: any;
+  result: any;
+}
+
+const removeListener = (listener: (message: Message) => void): void => {
+  worker.removeListener('message', listener);
 }
 
 export const startWorker = (): void => {
@@ -19,206 +23,38 @@ export const startWorker = (): void => {
   worker.setMaxListeners(1024);
 }
 
-export const openCd = (...args): Promise<any> => {
-   return new Promise((resolve, reject) => {
-        const listener = ({ resultType, error, result }: { resultType: string, error: any, result: any }) => {
-            if (resultType !== 'openCd') {
-                return;
-            }
-            removeListener(listener);
-            resolve(result);
-        }
-        worker.on('message', listener);
-        worker.postMessage({ action: 'openCd', args: [...args] });
-    });
-}
 
-export const getTrackCount = (): Promise<any> => (
-    new Promise((resolve, reject) => {
-        const listener = ({ resultType, error, result }: { resultType: string, error: any, result: any }) => {
-            if (resultType !== 'getTrackCount') {
-                return;
-            }
-            removeListener(listener);
-            if (error !== null) {
-                reject(error);
-                return;
-            }
-            resolve(result);
-        }
-        worker.on('message', listener);
-        worker.postMessage({ action: 'getTrackCount' });
-    })
-)
-
-export const closeCd = (): Promise<any> => (
-    new Promise((resolve, reject) => {
-        const listener = async ({ resultType, error, result }: { resultType: string, error: any, result: any }) => {
-            if (resultType !== 'closeCd') {
-                return;
-            }
-            removeListener(listener);
-            resolve(result);
-        }
-        worker.on('message', listener);
-        worker.postMessage({ action: 'closeCd' });
-    })
-)
-
-export const play = (trackNum: number): Promise<any> => (
-    new Promise((resolve, reject) => {
-        const listener = ({ resultType, error, result }: { resultType: string, error: any, result: any }) => {
-            if (resultType !== 'play') {
-                return;
-            }
-            removeListener(listener);
-            if (error !== null) {
-                reject(error);
-                return;
-            }
-            resolve(result);
-        }
-        worker.on('message', listener);
-        worker.postMessage({ action: 'play', args: [trackNum] });
-    })
-)
-
-export const stop = (): Promise<any> => (
-    new Promise((resolve, reject) => {
-        const listener = ({ resultType, error, result }: { resultType: string, error: any, result: any }) => {
-            if (resultType !== 'stop') {
-                return;
-            }
-            removeListener(listener);
-            resolve(result);
-        }
-        worker.on('message', listener);
-        worker.postMessage({ action: 'stop' });
-    })
-)
-
-export const pause = (): Promise<any> => (
-    new Promise((resolve, reject) => {
-        const listener = ({ resultType, error, result }: { resultType: string, error: any, result: any }) => {
-            if (resultType !== 'pause') {
-                return;
-            }
-            removeListener(listener);
-            resolve(result);
-        }
-        worker.on('message', listener);
-        worker.postMessage({ action: 'pause' });
-    })
-)
-
-export const resume = (): Promise<any> => (
-    new Promise((resolve, reject) => {
-        const listener = ({ resultType, error, result }: { resultType: string, error: any, result: any }) => {
-            if (resultType !== 'resume') {
-                return;
-            }
-            removeListener(listener);
-            resolve(result);
-        }
-        worker.on('message', listener);
-        worker.postMessage({ action: 'resume' });
-    })
-)
-
-export const getCurrentTrackNumber = (): Promise<any> => (
-    new Promise((resolve, reject) => {
-        const listener = ({ resultType, error, result }: { resultType: string, error: any, result: any }) => {
-            if (resultType !== 'getCurrentTrackNumber') {
-                return;
-            }
-            removeListener(listener);
-            if (error !== null) {
-                reject(error);
-                return;
-            }
-            resolve(result);
-        }
-        worker.on('message', listener);
-        worker.postMessage({ action: 'getCurrentTrackNumber' });
-    })
-)
-
-export const getTrackLength = (track: number): Promise<any> => (
-    new Promise((resolve, reject) => {
-        const listener = ({ resultType, error, result }: { resultType: string, error: any, result: any }) => {
-            if (resultType !== 'getTrackLength') {
-                return;
-            }
-            removeListener(listener);
-            if (error !== null) {
-                reject(error);
-                return;
-            }
-            resolve(result);
-        }
-        worker.on('message', listener);
-        worker.postMessage({ action: 'getTrackLength', args: [track] });
-    })
-)
-
-export const getCurrentPosition = (): Promise<any> => (
-    new Promise((resolve, reject) => {
-        const listener = ({ resultType, error, result }: { resultType: string, error: any, result: any }) => {
-            if (resultType !== 'getCurrentPosition') {
-                return;
-            }
-            removeListener(listener);
-            if (error !== null) {
-                reject(error);
-                return;
-            }
-            resolve(result);
-        }
-        worker.on('message', listener);
-        worker.postMessage({ action: 'getCurrentPosition' });
-    })
-)
-
-export const getDriveLetters = (): Promise<any> => (
+const createWorkerAction = (action: string) => (...args:any[]): Promise<any> => (
   new Promise((resolve, reject) => {
     const listener = ({ resultType, error, result }: { resultType: string, error: any, result: any }) => {
-      if (resultType !== 'getDriveLetters') {
+      if (resultType !== action) {
         return;
       }
       removeListener(listener);
-      resolve(result);
-    }
-    worker.on('message', listener);
-    worker.postMessage({ action: 'getDriveLetters' });
-  })
-)
-
-export const isCdInserted = (...args): Promise<any> => (
-  new Promise((resolve, reject) => {
-    const listener = ({ resultType, error, result }: { resultType: string, error: any, result: any }) => {
-      if (resultType !== 'isCdInserted') {
+      if (error !== null) {
+        reject(error);
         return;
       }
-      removeListener(listener);
       resolve(result);
     }
     worker.on('message', listener);
-    worker.postMessage({ action: 'isCdInserted', args: [...args] });
+    worker.postMessage({ action, args });
   })
-)
+);
+/* eslint-enable @typescript-eslint/no-explicit-any */
 
-export const ejectCd = (driveLetter: string): Promise<any> => (
-  new Promise((resolve, reject) => {
-    const listener = ({ resultType, error, result }: { resultType: string, error: any, result: any }) => {
-      if (resultType !== 'ejectCd') {
-        return;
-      }
-      removeListener(listener);
-      resolve(result);
-    }
-    worker.on('message', listener);
-    worker.postMessage({ action: 'ejectCd', args: [driveLetter] });
-  })
-)
+export const openCd = createWorkerAction('openCd');
+export const getTrackCount = createWorkerAction('getTrackCount');
+export const closeCd = createWorkerAction('closeCd');
+export const play = createWorkerAction('play');
+export const stop = createWorkerAction('stop');
+export const pause = createWorkerAction('pause');
+export const resume = createWorkerAction('resume');
+export const getCurrentTrackNumber = createWorkerAction('getCurrentTrackNumber');
+export const getTrackLength = createWorkerAction('getTrackLength');
+export const getCurrentPosition = createWorkerAction('getCurrentPosition');
+export const getDriveLetters = createWorkerAction('getDriveLetters');
+export const isCdInserted = createWorkerAction('isCdInserted');
+export const ejectCd = createWorkerAction('ejectCd');
 
 export { worker };

@@ -1,20 +1,27 @@
-/* eslint-disable */
-// @ts-nocheck
+import { contextBridge, ipcRenderer } from 'electron';
+import {toCamelCase} from "../common/util/StringUtil.ts";
 
-const { contextBridge, ipcRenderer } = require('electron')
+const actions: { [key: string]: { args: { name: string, type: string }[] } } = {
+  'open-cd': { args: [{ name: 'driveLetter', type: 'string' }] },
+  'get-track-count': { args: [] },
+  'close-cd': { args: [] },
+  'play': { args: [{ name: 'track', type: 'number' }] },
+  'stop': { args: [] },
+  'get-current-position': { args: [] },
+  'get-track-length': { args: [{ name: 'track', type: 'number' }] },
+  'get-current-track-number': { args: [] },
+  'pause': { args: [] },
+  'resume': { args: [] },
+  'get-drive-letters': { args: [] },
+  'is-cd-inserted': { args: [{ name: 'driveLetter', type: 'string' }] },
+  'eject-cd': { args: [{ name: 'driveLetter', type: 'string' }] }
+};
 
-contextBridge.exposeInMainWorld('mci', {
-    openCd: (driveLetter: string) => {ipcRenderer.invoke('open-cd', driveLetter)},
-    getTrackCount: () => { return ipcRenderer.invoke('get-track-count')},
-    closeCd: () => { return ipcRenderer.invoke('close-cd')},
-    play: (track) => { return ipcRenderer.invoke('play', track)},
-    stop: () => { return ipcRenderer.invoke('stop')},
-    getCurrentPosition: () => { return ipcRenderer.invoke('get-current-position')},
-    getTrackLength: (track) => { return ipcRenderer.invoke('get-track-length', track)},
-    getCurrentTrackNumber: () => { return ipcRenderer.invoke('get-current-track-number')},
-    pause: () => { return ipcRenderer.invoke('pause')},
-    resume: () => { return ipcRenderer.invoke('resume')},
-    getDriveLetters: () => { return ipcRenderer.invoke('get-drive-letters')},
-    isCdInserted: (...args) => { return ipcRenderer.invoke('is-cd-inserted', ...args)},
-    ejectCd: (driveLetter) => { return ipcRenderer.invoke('eject-cd', driveLetter)},
-})
+/* eslint-disable @typescript-eslint/no-explicit-any */
+const mci: { [key: string]: (...args: any[]) => Promise<any> } = {};
+Object.keys(actions).forEach(action => {
+  mci[toCamelCase(action)] = (...args: any[]) => ipcRenderer.invoke(action, ...args);
+});
+/* eslint-enable @typescript-eslint/no-explicit-any */
+
+contextBridge.exposeInMainWorld('mci', mci);

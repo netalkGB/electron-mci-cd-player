@@ -1,5 +1,6 @@
 /* eslint-disable */
 // @ts-nocheck
+
 import {useContext, useEffect, useState} from 'react'
 
 import './App.css'
@@ -93,7 +94,7 @@ function App() {
       </select>
 
       <button onClick={async () => {
-         await window.mci.play(state.currentTrackNumber)
+        await window.mci.play(state.currentTrackNumber)
         dispatch({type: 'SET_PLAY_STATE', payload: 'playing'})
       }}>Play
       </button>
