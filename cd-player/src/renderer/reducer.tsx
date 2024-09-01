@@ -32,7 +32,7 @@ export type Action =
   | { type: 'SET_TRACK_LIST'; payload: CdTrack[] }
   | { type: 'SET_AVAILABLE_DRIVE_LETTERS'; payload: string[] }
   | { type: 'SET_ACTIVE_DRIVE_LETTER'; payload: string }
-  | { type: 'SET_TIMER_ID'; payload: NodeJS.Timeout }
+  | { type: 'SET_TIMER_ID'; payload: NodeJS.Timeout | null }
 
 export const playerReducer = (state: PlayerState, action: Action): PlayerState => {
   switch (action.type) {
