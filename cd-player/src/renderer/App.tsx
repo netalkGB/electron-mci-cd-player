@@ -1,12 +1,10 @@
-/* eslint-disable */
-// @ts-nocheck
-
-import {useContext, useEffect, useState} from 'react'
+import {useContext, useEffect} from 'react'
 
 import './App.css'
 import {PlayerContext} from "./context/PlayerContext.tsx";
+import {CdTrack} from "./reducer.tsx";
 
-const formatMilliseconds = (ms) => {
+const formatMilliseconds = (ms:number) => {
   const totalSeconds = Math.floor(ms / 1000);
   const minutes = Math.floor(totalSeconds / 60);
   const seconds = totalSeconds % 60;
@@ -19,7 +17,11 @@ const formatMilliseconds = (ms) => {
 }
 
 function App() {
-  const { state, dispatch } = useContext(PlayerContext);
+  const playerContext = useContext(PlayerContext);
+  if (!playerContext) {
+    return
+  }
+  const { state, dispatch } = playerContext;
   let first = true
   useEffect(() => {
     if (!first) {
@@ -34,7 +36,7 @@ function App() {
     first = false
   }, []);
 
-  async function handleSelectDriveLetter(event) {
+  async function handleSelectDriveLetter(event: React.ChangeEvent<HTMLSelectElement>) {
     await setupDrive(event.target.value)
   }
 
@@ -62,9 +64,9 @@ function App() {
 
     const trackCount = await window.mci.getTrackCount()
     console.log('trackCount', trackCount)
-    let trackList: CdTrackp[] = [];
+    let trackList: CdTrack[] = [];
     for (let i = 0; i < trackCount; i++) {
-      trackList = [...trackList, {number: i + 1, length: await mci.getTrackLength(i + 1)}]
+      trackList = [...trackList, {number: i + 1, length: await window.mci.getTrackLength(i + 1)}]
     }
     dispatch({type: 'SET_TRACK_LIST', payload: trackList})
 
@@ -130,12 +132,14 @@ function App() {
       }}>Next
       </button>
       <button onClick={async () => {
-        await window.mci.ejectCd(state.activeDriveLetter)
-        if (state.timerId) {
-          clearInterval(state.timerId)
-          dispatch({type: 'SET_TIMER_ID', payload: null})
-          await window.mci.closeCd()
-          console.log('closed')
+        if (state.activeDriveLetter) {
+          await window.mci.ejectCd(state.activeDriveLetter);
+          if (state.timerId) {
+            clearInterval(state.timerId);
+            dispatch({type: 'SET_TIMER_ID', payload: null});
+            await window.mci.closeCd();
+            console.log('closed');
+          }
         }
       }}>Eject
       </button>
