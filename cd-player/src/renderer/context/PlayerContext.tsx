@@ -1,5 +1,5 @@
 import React, { createContext, useReducer, ReactNode } from 'react'
-import { playerReducer, initialState, PlayerState, Action } from '../reducer'
+import { playerReducer, initialState, PlayerState, Action } from '../reducer.tsx'
 
 interface PlayerContextProps {
   state: PlayerState

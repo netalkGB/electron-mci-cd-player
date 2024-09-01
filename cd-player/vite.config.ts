@@ -3,7 +3,7 @@ import { defineConfig } from 'vite'
 import path from 'node:path'
 import react from '@vitejs/plugin-react'
 import electron from 'vite-plugin-electron/simple'
-import checker from "vite-plugin-checker"
+import checker from 'vite-plugin-checker'
 import copy from 'rollup-plugin-copy'
 
 export default defineConfig(({ command }) => {
@@ -13,6 +13,7 @@ export default defineConfig(({ command }) => {
   return {
     resolve: {
       alias: {
+        // eslint-disable-next-line no-undef
         '@': path.join(__dirname, 'src')
       },
     },

@@ -1,7 +1,7 @@
-import fs from 'fs/promises';
+import fs from 'fs/promises'
 
-const folders = ['dist', 'dist-electron', 'release'];
+const folders = ['dist', 'dist-electron', 'release']
 
 Promise.all(
   folders.map(folder => fs.rm(folder, { recursive: true, force: true }))
-).catch(console.error);
+).catch(console.error)

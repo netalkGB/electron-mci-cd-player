@@ -1,4 +1,4 @@
-import {Action, mapMethodAndIpc} from "./PreloadHelper.ts";
+import { Action, mapMethodAndIpc } from './PreloadHelper.ts'
 
 declare global {
   interface Window {

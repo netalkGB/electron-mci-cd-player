@@ -1,3 +1,8 @@
+export interface CdTrack {
+  number: number;
+  length: number;
+}
+
 export interface PlayerState {
   totalTrackCount: number;
   currentTrackNumber: number;
@@ -7,6 +12,7 @@ export interface PlayerState {
   trackList: CdTrack[];
   availableDriveLetters: string[];
   activeDriveLetter: string | null;
+  // eslint-disable-next-line no-undef
   timerId: NodeJS.Timeout | null;
 }
 
@@ -32,34 +38,30 @@ export type Action =
   | { type: 'SET_TRACK_LIST'; payload: CdTrack[] }
   | { type: 'SET_AVAILABLE_DRIVE_LETTERS'; payload: string[] }
   | { type: 'SET_ACTIVE_DRIVE_LETTER'; payload: string }
+  // eslint-disable-next-line no-undef
   | { type: 'SET_TIMER_ID'; payload: NodeJS.Timeout | null }
 
 export const playerReducer = (state: PlayerState, action: Action): PlayerState => {
   switch (action.type) {
-  case 'SET_TOTAL_TRACK_COUNT':
-    return { ...state, totalTrackCount: action.payload }
-  case 'SET_CURRENT_TRACK_NUMBER':
-    return { ...state, currentTrackNumber: action.payload }
-  case 'SET_CURRENT_POSITION':
-    return { ...state, currentTrackPosition: action.payload }
-  case 'SET_CURRENT_DURATION':
-    return { ...state, currentTrackDuration: action.payload }
-  case 'SET_PLAY_STATE':
-    return { ...state, playState: action.payload }
-  case 'SET_TRACK_LIST':
-    return { ...state, trackList: action.payload }
-  case 'SET_AVAILABLE_DRIVE_LETTERS':
-    return { ...state, availableDriveLetters: action.payload }
-  case 'SET_ACTIVE_DRIVE_LETTER':
-    return { ...state, activeDriveLetter: action.payload }
-  case 'SET_TIMER_ID':
-    return { ...state, timerId: action.payload }
-  default:
-    return state
+    case 'SET_TOTAL_TRACK_COUNT':
+      return { ...state, totalTrackCount: action.payload }
+    case 'SET_CURRENT_TRACK_NUMBER':
+      return { ...state, currentTrackNumber: action.payload }
+    case 'SET_CURRENT_POSITION':
+      return { ...state, currentTrackPosition: action.payload }
+    case 'SET_CURRENT_DURATION':
+      return { ...state, currentTrackDuration: action.payload }
+    case 'SET_PLAY_STATE':
+      return { ...state, playState: action.payload }
+    case 'SET_TRACK_LIST':
+      return { ...state, trackList: action.payload }
+    case 'SET_AVAILABLE_DRIVE_LETTERS':
+      return { ...state, availableDriveLetters: action.payload }
+    case 'SET_ACTIVE_DRIVE_LETTER':
+      return { ...state, activeDriveLetter: action.payload }
+    case 'SET_TIMER_ID':
+      return { ...state, timerId: action.payload }
+    default:
+      return state
   }
-}
-
-export interface CdTrack {
-  number: number;
-  length: number;
 }
