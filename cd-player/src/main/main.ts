@@ -3,7 +3,7 @@
 
 import { app, BrowserWindow, ipcMain } from 'electron'
 import path from 'path'
-import * as cdp from './cdp'
+import * as CdPlayer from './CdPlayer.ts'
 import { fileURLToPath } from 'url'
 import {toCamelCase} from "../common/util/StringUtil.ts";
 
@@ -32,7 +32,7 @@ const createWindow = () => {
     const camelCaseAction = toCamelCase(action);
     ipcMain.handle(action, (event, ...args) => {
       return new Promise((resolve, reject) => {
-        cdp[camelCaseAction](...args)
+        CdPlayer[camelCaseAction](...args)
           .then((r) => { resolve(r); })
           .catch((e) => { reject(e); });
       });
@@ -43,7 +43,7 @@ const createWindow = () => {
 }
 
 app.whenReady().then(() => {
-  cdp.startWorker()
+  CdPlayer.startWorker()
   const win = createWindow()
 
   if (process.env.VITE_DEV_SERVER_URL) {
