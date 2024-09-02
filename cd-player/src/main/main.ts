@@ -12,7 +12,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const createWindow = () => {
   const win = new BrowserWindow({
     width: 530,
-    height: 80,
+    height: 500,
     webPreferences: {
       preload: path.join(__dirname, '..', 'preload', 'preload.mjs'),
       contextIsolation: true,
@@ -20,7 +20,7 @@ const createWindow = () => {
       nodeIntegration: false
     }
   })
-  win.setMenuBarVisibility(true)
+  win.setMenuBarVisibility(false)
 
   const cdPlayerActions = [
     'open-cd', 'get-track-count', 'close-cd', 'play', 'stop', 'get-current-position',
