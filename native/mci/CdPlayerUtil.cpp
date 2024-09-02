@@ -6,7 +6,7 @@ namespace mci {
   std::vector<std::string> CdPlayerUtil::GetDriveLetters() {
     std::vector<std::string> driveLetters;
     for (int i = 0; i < 26; ++i) {
-      TCHAR szDrive[] = { (TCHAR)('A' + i), L':', L'\\', L'\0' };
+      TCHAR szDrive[] = { static_cast<TCHAR>(('A' + i)), L':', L'\\', L'\0' };
       if (GetDriveType(szDrive) != DRIVE_CDROM) continue;
       driveLetters.push_back(std::string(1, 'A' + i) + ":");
     }

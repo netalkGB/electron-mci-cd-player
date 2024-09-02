@@ -130,7 +130,7 @@ namespace mci {
     }
   }
 
-  Napi::Object Init(Napi::Env env, Napi::Object exports) {
+  Napi::Object Init(const Napi::Env env, const Napi::Object exports) {
     exports.Set(Napi::String::New(env, "ejectCd"), Napi::Function::New(env, EjectCd));
     exports.Set(Napi::String::New(env, "isCdInserted"), Napi::Function::New(env, IsCdInserted));
     exports.Set(Napi::String::New(env, "getDriveLetters"), Napi::Function::New(env, GetDriveLetters));

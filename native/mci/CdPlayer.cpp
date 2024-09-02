@@ -17,51 +17,51 @@ namespace mci {
   }
 
   bool CdPlayer::OpenCd(const char *driveLetter) {
-    return _OpenCd((LPCSTR*)&driveLetter) == 0;
+    return SendOpenCdCommand(&driveLetter) == 0;
   }
 
   int CdPlayer::GetTrackCount() {
-    if (_GetTrackCount()) {
+    if (SendGetTrackCountCommand()) {
       throw CdPlayerException("Error getting track count");
     }
-    return (int) mciStatusParms.dwReturn;
+    return static_cast<int>(mciStatusParms.dwReturn);
   }
 
   bool CdPlayer::CloseCd() {
-    return _CloseCd() == 0;
+    return SendCloseCdCommand() == 0;
   }
 
-  void CdPlayer::Play(int track) {
+  void CdPlayer::Play(const int track) {
     Stop();
-    if (_Play(GetTrackStart(track))) {
+    if (SendPlayCommand(GetTrackStart(track))) {
       CloseCd();
       throw CdPlayerException("Error playing track");
     }
   }
 
   void CdPlayer::Stop() {
-    _Stop();
+    SendStopCommand();
   }
 
   void CdPlayer::Pause() {
-    _Pause();
+    SendPauseCommand();
   }
 
   void CdPlayer::Resume() {
-    _Resume();
+    SendResumeCommand();
   }
 
   int CdPlayer::GetCurrentTrackNumber() {
-    if (_GetCurrentTrackNumber()) {
+    if (SendGetCurrentTrackNumberCommand()) {
       CloseCd();
       throw CdPlayerException("Error getting current track number");
     }
-    return (int) mciStatusParms.dwReturn;
+    return static_cast<int>(mciStatusParms.dwReturn);
   }
 
-  unsigned long CdPlayer::GetTrackLength(int track) {
-    _SetMciSetFormat(MCI_FORMAT_MSF);
-    if (_GetTrackLength(track)) {
+  unsigned long CdPlayer::GetTrackLength(const int track) {
+    SendSetMciSetFormatCommand(MCI_FORMAT_MSF);
+    if (SendGetTrackLengthCommand(track)) {
       CloseCd();
       throw CdPlayerException("Error getting track length");
     }
@@ -69,24 +69,24 @@ namespace mci {
   }
 
   unsigned long CdPlayer::GetCurrentPosition() {
-    if (_SetMciSetFormat(MCI_FORMAT_MSF)) {
+    if (SendSetMciSetFormatCommand(MCI_FORMAT_MSF)) {
       CloseCd();
       throw CdPlayerException("Error setting time format");
     }
 
-    if (_GetCurrentTrackNumber()) {
+    if (SendGetCurrentTrackNumberCommand()) {
       CloseCd();
       throw CdPlayerException("Error getting current track number");
     }
     DWORD dwCurrentTrackNumber = mciStatusParms.dwReturn;
 
-    if (_GetCurrentPosition()) {
+    if (SendGetCurrentPositionCommand()) {
       CloseCd();
       throw CdPlayerException("Error getting current position");
     }
     DWORD dwCurrentPosition = mciStatusParms.dwReturn;
 
-    if (_GetTrackStart(dwCurrentTrackNumber)) {
+    if (SendGetTrackStartCommand(dwCurrentTrackNumber)) {
       CloseCd();
       throw CdPlayerException("Error getting track start");
     }
@@ -96,85 +96,85 @@ namespace mci {
   }
 
   bool CdPlayer::EjectCd() {
-    return _EjectCd() == 1;
+    return SendEjectCdCommand() == 1;
   }
 
-  DWORD CdPlayer::_OpenCd(const LPCSTR *lpstrDriveLetter) {
+  DWORD CdPlayer::SendOpenCdCommand(const LPCSTR *lpstrDriveLetter) {
     mciOpenParms.lpstrDeviceType = "cdaudio";
     mciOpenParms.lpstrElementName = *lpstrDriveLetter;
-    return mciSendCommand(0, MCI_OPEN, MCI_OPEN_TYPE | MCI_OPEN_ELEMENT, (DWORD_PTR)&mciOpenParms);
+    return mciSendCommand(0, MCI_OPEN, MCI_OPEN_TYPE | MCI_OPEN_ELEMENT, reinterpret_cast<DWORD_PTR>(&mciOpenParms));
   }
 
-  DWORD CdPlayer::_GetTrackCount() {
+  DWORD CdPlayer::SendGetTrackCountCommand() {
     mciStatusParms.dwItem = MCI_STATUS_NUMBER_OF_TRACKS;
-    return mciSendCommand(mciOpenParms.wDeviceID, MCI_STATUS, MCI_STATUS_ITEM, (DWORD_PTR) &mciStatusParms);
+    return mciSendCommand(mciOpenParms.wDeviceID, MCI_STATUS, MCI_STATUS_ITEM, reinterpret_cast<DWORD_PTR>(&mciStatusParms));
   }
 
-  DWORD CdPlayer::_CloseCd() {
-    return mciSendCommand(mciOpenParms.wDeviceID, MCI_CLOSE, 0, (DWORD_PTR) &mciGenericParms);
+  DWORD CdPlayer::SendCloseCdCommand() {
+    return mciSendCommand(mciOpenParms.wDeviceID, MCI_CLOSE, 0, reinterpret_cast<DWORD_PTR>(&mciGenericParms));
   }
 
-  DWORD CdPlayer::_GetTrackStart(DWORD dwTrack) {
+  DWORD CdPlayer::SendGetTrackStartCommand(DWORD dwTrack) {
     mciStatusParms.dwItem = MCI_STATUS_POSITION;
     mciStatusParms.dwTrack = dwTrack;
-    return mciSendCommand(mciOpenParms.wDeviceID, MCI_STATUS, MCI_STATUS_ITEM | MCI_TRACK, (DWORD_PTR) &mciStatusParms);
+    return mciSendCommand(mciOpenParms.wDeviceID, MCI_STATUS, MCI_STATUS_ITEM | MCI_TRACK, reinterpret_cast<DWORD_PTR>(&mciStatusParms));
   }
 
   DWORD CdPlayer::GetTrackStart(DWORD dwTrack) {
-    if (_GetTrackStart(dwTrack)) {
+    if (SendGetTrackStartCommand(dwTrack)) {
       CloseCd();
       throw CdPlayerException("Error getting track start");
     }
     return mciStatusParms.dwReturn;
   }
 
-  DWORD CdPlayer::_Play(DWORD dwTrackStart) {
+  DWORD CdPlayer::SendPlayCommand(DWORD dwTrackStart) {
     mciPlayParms.dwFrom = dwTrackStart;
-    return mciSendCommand(mciOpenParms.wDeviceID, MCI_PLAY, MCI_FROM, (DWORD_PTR) &mciPlayParms);
+    return mciSendCommand(mciOpenParms.wDeviceID, MCI_PLAY, MCI_FROM, reinterpret_cast<DWORD_PTR>(&mciPlayParms));
   }
 
-  DWORD CdPlayer::_Stop() {
-    return mciSendCommand(mciOpenParms.wDeviceID, MCI_STOP, 0, (DWORD_PTR) &mciGenericParms);
+  DWORD CdPlayer::SendStopCommand() {
+    return mciSendCommand(mciOpenParms.wDeviceID, MCI_STOP, 0, reinterpret_cast<DWORD_PTR>(&mciGenericParms));
   }
 
-  DWORD CdPlayer::_Pause() {
+  DWORD CdPlayer::SendPauseCommand() {
     return mciSendCommand(mciOpenParms.wDeviceID, MCI_PAUSE, 0, 0);
   }
 
-  DWORD CdPlayer::_Resume() {
+  DWORD CdPlayer::SendResumeCommand() {
     return mciSendCommand(mciOpenParms.wDeviceID, MCI_RESUME, 0, 0);
   }
 
-  DWORD CdPlayer::_GetCurrentTrackNumber() {
+  DWORD CdPlayer::SendGetCurrentTrackNumberCommand() {
     mciStatusParms.dwItem = MCI_STATUS_CURRENT_TRACK;
-    return mciSendCommand(mciOpenParms.wDeviceID, MCI_STATUS, MCI_STATUS_ITEM, (DWORD_PTR) &mciStatusParms);
+    return mciSendCommand(mciOpenParms.wDeviceID, MCI_STATUS, MCI_STATUS_ITEM, reinterpret_cast<DWORD_PTR>(&mciStatusParms));
   }
 
-  DWORD CdPlayer::_GetTrackLength(DWORD dwTrack) {
+  DWORD CdPlayer::SendGetTrackLengthCommand(DWORD dwTrack) {
     mciStatusParms.dwItem = MCI_STATUS_LENGTH;
     mciStatusParms.dwTrack = dwTrack;
-    return mciSendCommand(mciOpenParms.wDeviceID, MCI_STATUS, MCI_STATUS_ITEM | MCI_TRACK, (DWORD_PTR) &mciStatusParms);
+    return mciSendCommand(mciOpenParms.wDeviceID, MCI_STATUS, MCI_STATUS_ITEM | MCI_TRACK, reinterpret_cast<DWORD_PTR>(&mciStatusParms));
   }
 
-  DWORD CdPlayer::ConvertToMilliseconds(DWORD dwTime) {
+  DWORD CdPlayer::ConvertToMilliseconds(const DWORD dwTime) {
     DWORD minutes = MCI_MSF_MINUTE(dwTime);
     DWORD seconds = MCI_MSF_SECOND(dwTime);
     DWORD frames = MCI_MSF_FRAME(dwTime);
     return (minutes * 60000) + (seconds * 1000) + (frames * (1000 / 75));
   }
 
-  DWORD CdPlayer::_GetCurrentPosition() {
+  DWORD CdPlayer::SendGetCurrentPositionCommand() {
     mciStatusParms.dwItem = MCI_STATUS_POSITION;
-    return mciSendCommand(mciOpenParms.wDeviceID, MCI_STATUS, MCI_STATUS_ITEM, (DWORD_PTR) &mciStatusParms);
+    return mciSendCommand(mciOpenParms.wDeviceID, MCI_STATUS, MCI_STATUS_ITEM, reinterpret_cast<DWORD_PTR>(&mciStatusParms));
   }
 
-  DWORD CdPlayer::_SetMciSetFormat(DWORD dwTimeFormat) {
+  DWORD CdPlayer::SendSetMciSetFormatCommand(const DWORD dwTimeFormat) {
     mciSetParms.dwTimeFormat = dwTimeFormat;
-    return mciSendCommand(mciOpenParms.wDeviceID, MCI_SET, MCI_SET_TIME_FORMAT, (DWORD_PTR) &mciSetParms);
+    return mciSendCommand(mciOpenParms.wDeviceID, MCI_SET, MCI_SET_TIME_FORMAT, reinterpret_cast<DWORD_PTR>(&mciSetParms));
   }
 
-  DWORD CdPlayer::_EjectCd() {
-    return mciSendCommand(mciOpenParms.wDeviceID, MCI_SET, MCI_SET_DOOR_OPEN, (DWORD_PTR) &mciGenericParms);
+  DWORD CdPlayer::SendEjectCdCommand() {
+    return mciSendCommand(mciOpenParms.wDeviceID, MCI_SET, MCI_SET_DOOR_OPEN, reinterpret_cast<DWORD_PTR>(&mciGenericParms));
   }
 
-} // mci
+}

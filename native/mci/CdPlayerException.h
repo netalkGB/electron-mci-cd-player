@@ -1,16 +1,16 @@
-// CdPlayerException.h
 #ifndef CDPLAYEREXCEPTION_H
 #define CDPLAYEREXCEPTION_H
 
 #include <exception>
 #include <string>
+#include <utility>
 
 namespace mci {
   class CdPlayerException : public std::exception {
   public:
-    CdPlayerException(const std::string& message) : message_(message) {}
+    explicit CdPlayerException(std::string message) : message_(std::move(message)) {}
 
-    virtual const char* what() const noexcept override {
+    [[nodiscard]] const char* what() const noexcept override {
       return message_.c_str();
     }
 
@@ -19,4 +19,4 @@ namespace mci {
   };
 }
 
-#endif // CDPLAYEREXCEPTION_H
+#endif

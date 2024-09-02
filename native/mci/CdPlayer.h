@@ -26,23 +26,23 @@ private:
   MCI_OPEN_PARMS mciOpenParms;
   MCI_PLAY_PARMS mciPlayParms;
   MCI_SET_PARMS mciSetParms;
-  DWORD _OpenCd(const LPCSTR *lpstrDriveLetter);
-  DWORD _GetTrackCount();
-  DWORD _CloseCd();
-  DWORD _GetTrackStart(DWORD dwTrack);
+  DWORD SendOpenCdCommand(const LPCSTR *lpstrDriveLetter);
+  DWORD SendGetTrackCountCommand();
+  DWORD SendCloseCdCommand();
+  DWORD SendGetTrackStartCommand(DWORD dwTrack);
   DWORD GetTrackStart(DWORD dwTrack);
-  DWORD _Play(DWORD dwTrackStart);
-  DWORD _Stop();
-  DWORD _Pause();
-  DWORD _Resume();
-  DWORD _GetCurrentTrackNumber();
-  DWORD _GetTrackLength(DWORD dwTrack);
+  DWORD SendPlayCommand(DWORD dwTrackStart);
+  DWORD SendStopCommand();
+  DWORD SendPauseCommand();
+  DWORD SendResumeCommand();
+  DWORD SendGetCurrentTrackNumberCommand();
+  DWORD SendGetTrackLengthCommand(DWORD dwTrack);
   DWORD ConvertToMilliseconds(DWORD dwTime);
-  DWORD _GetCurrentPosition();
-  DWORD _SetMciSetFormat(DWORD dwTimeFormat);
-  DWORD _EjectCd();
+  DWORD SendGetCurrentPositionCommand();
+  DWORD SendSetMciSetFormatCommand(DWORD dwTimeFormat);
+  DWORD SendEjectCdCommand();
 };
 
-} // mci
+}
 
-#endif //CDPLAYER_H
+#endif
