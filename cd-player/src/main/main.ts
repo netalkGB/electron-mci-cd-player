@@ -3,21 +3,35 @@ import path from 'path'
 import * as CdPlayer from './CdPlayer.ts'
 import { fileURLToPath } from 'url'
 import { toCamelCase } from '../common/util/StringUtil.ts'
+import { ElectronWindow } from './ElectronWindow.ts'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 const createWindow = () => {
   const win = new BrowserWindow({
-    width: 530,
-    height: 500,
+    width: 240,
+    height: 100,
+    minWidth: 240,
+    minHeight: 100,
+    maxWidth: 240,
+    maxHeight: 100,
+    frame: false,
+    maximizable: false,
     webPreferences: {
       preload: path.join(__dirname, '..', 'preload', 'preload.mjs'),
       contextIsolation: true,
       // enableRemoteModule: false,
-      nodeIntegration: false
+      nodeIntegration: false,
     }
   })
   win.setMenuBarVisibility(false)
+
+  win.on('blur', () => {
+    win.webContents.send('window-blur')
+  })
+  win.on('focus', () => {
+    win.webContents.send('window-focus')
+  })
 
   const cdPlayerActions = [
     'open-cd', 'get-track-count', 'close-cd', 'play', 'stop', 'get-current-position',
@@ -40,6 +54,17 @@ const createWindow = () => {
     })
   })
 
+  const electronActions = ['minimize', 'close', 'toggle-compact-mode']
+  const electronWindow = new ElectronWindow(win)
+  electronActions.forEach(action => {
+    const camelCaseAction = toCamelCase(action)
+    // @ts-expect-error Disabling due to various possible types
+    ipcMain.handle(action, (event, ...args) => {
+      // @ts-expect-error Disabling due to various possible types
+      electronWindow[camelCaseAction](...args)
+    })
+  })
+
   return win
 }
 
@@ -48,6 +73,7 @@ app.whenReady().then(() => {
   const win = createWindow()
 
   if (process.env.VITE_DEV_SERVER_URL) {
+    win.webContents.openDevTools()
     win.loadURL(process.env.VITE_DEV_SERVER_URL)
   } else {
     win.loadFile('dist/index.html')
