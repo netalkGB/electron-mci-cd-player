@@ -48,6 +48,7 @@ app.whenReady().then(() => {
   const win = createWindow()
 
   if (process.env.VITE_DEV_SERVER_URL) {
+    win.webContents.openDevTools()
     win.loadURL(process.env.VITE_DEV_SERVER_URL)
   } else {
     win.loadFile('dist/index.html')
