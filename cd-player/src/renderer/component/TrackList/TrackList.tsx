@@ -3,35 +3,45 @@ import { Play } from 'lucide-react'
 import styles from './tracklist.module.css'
 
 export type Track = {
-  id: number
-  name: string
-  duration: string
-  isPlaying: boolean
+  id: number;
+  name: string;
+  duration: string;
+  isPlaying: boolean;
 }
 
 type TrackListProps = {
-  onTrackSelect: (track: Track) => void
-  trackList: Track[]
+  onTrackSelect: (track: Track) => void;
+  trackList: Track[];
 }
 
 export const TrackList = forwardRef(({ onTrackSelect, trackList }: TrackListProps, ref) => {
   const [selectedTrack, setSelectedTrack] = useState<Track | null>(null)
+  const [isKeyboardScrolling, setIsKeyboardScrolling] = useState(false)
 
   const trackRefs = useRef<(HTMLDivElement | null)[]>([])
   const listRef = useRef<HTMLDivElement | null>(null)
 
   useImperativeHandle(ref, () => ({
-    setSelectedTrack,
+    setSelectedTrack: (track: Track | null) => {
+      setSelectedTrack(track)
+
+      if (track) {
+        const currentIndex = trackList.findIndex((t) => t.id === track.id)
+        if (currentIndex !== -1 && trackRefs.current[currentIndex]) {
+          trackRefs.current[currentIndex]?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+        }
+      }
+    },
   }))
 
   useEffect(() => {
-    if (selectedTrack) {
-      const currentIndex = trackList.findIndex(track => track.id === selectedTrack.id)
+    if (selectedTrack && isKeyboardScrolling) {
+      const currentIndex = trackList.findIndex((track) => track.id === selectedTrack.id)
       if (currentIndex !== -1 && trackRefs.current[currentIndex]) {
-        trackRefs.current[currentIndex]?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+        trackRefs.current[currentIndex]?.scrollIntoView({ behavior: 'instant', block: 'nearest' })
       }
     }
-  }, [selectedTrack, trackList])
+  }, [selectedTrack, trackList, isKeyboardScrolling])
 
   const handleTrackClick = (track: Track) => {
     setSelectedTrack(track)
@@ -42,11 +52,13 @@ export const TrackList = forwardRef(({ onTrackSelect, trackList }: TrackListProp
   }
 
   const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
-    event.preventDefault() // デフォルトのスクロール動作を無効化
+    event.preventDefault()
+    event.stopPropagation()
+    setIsKeyboardScrolling(true)
 
     if (!selectedTrack) return
 
-    const currentIndex = trackList.findIndex(track => track.id === selectedTrack.id)
+    const currentIndex = trackList.findIndex((track) => track.id === selectedTrack.id)
     if (event.key === 'ArrowDown' && currentIndex < trackList.length - 1) {
       setSelectedTrack(trackList[currentIndex + 1])
     } else if (event.key === 'ArrowUp' && currentIndex > 0) {
@@ -56,8 +68,18 @@ export const TrackList = forwardRef(({ onTrackSelect, trackList }: TrackListProp
     }
   }
 
+  const handleWheel = () => {
+    setIsKeyboardScrolling(false)
+  }
+
   return (
-    <div className={styles.trackList} onKeyDown={handleKeyDown} tabIndex={0} ref={listRef}>
+    <div
+      className={styles.trackList}
+      onKeyDown={handleKeyDown}
+      onWheel={handleWheel}
+      tabIndex={0}
+      ref={listRef}
+    >
       {trackList.map((track, index) => (
         <div
           key={track.id}

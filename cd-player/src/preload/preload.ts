@@ -22,6 +22,7 @@ declare global {
       minimize: () => (void);
       close: () => (void);
       toggleCompactMode: () => (void);
+      showBrowserWindow: () => (void);
     };
     electronHandler: {
       onWindowBlur: (callback: () => void) => void;
@@ -49,7 +50,8 @@ mapMethodAndIpc('mci', [
 mapMethodAndIpc('electron', [
   { ipcChannel: 'minimize', methodName: 'minimize' },
   { ipcChannel: 'close', methodName: 'close' },
-  { ipcChannel: 'toggle-compact-mode', methodName: 'toggleCompactMode' }
+  { ipcChannel: 'toggle-compact-mode', methodName: 'toggleCompactMode' },
+  { ipcChannel: 'show-browser-window', methodName: 'showBrowserWindow' }
 ])
 contextBridge.exposeInMainWorld('electronHandler', {
   onWindowBlur: (callback: () => void): void => {

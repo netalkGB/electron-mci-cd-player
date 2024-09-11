@@ -34,4 +34,8 @@ export class ElectronWindow {
       })
     }
   }
+
+  public showBrowserWindow () {
+    this.browserWindow.show()
+  }
 }

@@ -15,12 +15,12 @@ const createWindow = () => {
     minHeight: 100,
     maxWidth: 240,
     maxHeight: 100,
+    show: false,
     frame: false,
     maximizable: false,
     webPreferences: {
       preload: path.join(__dirname, '..', 'preload', 'preload.mjs'),
       contextIsolation: true,
-      // enableRemoteModule: false,
       nodeIntegration: false,
     }
   })
@@ -54,7 +54,7 @@ const createWindow = () => {
     })
   })
 
-  const electronActions = ['minimize', 'close', 'toggle-compact-mode']
+  const electronActions = ['minimize', 'close', 'toggle-compact-mode', 'show-browser-window']
   const electronWindow = new ElectronWindow(win)
   electronActions.forEach(action => {
     const camelCaseAction = toCamelCase(action)

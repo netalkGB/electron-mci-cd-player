@@ -1,4 +1,3 @@
-#cmake_minimum_required(VERSION 3.10)
 cmake_minimum_required(VERSION 3.15)
 cmake_policy(SET CMP0091 NEW)
 cmake_policy(SET CMP0042 NEW)
@@ -19,12 +18,13 @@ execute_process(
 string(REGEX REPLACE "^v" "" NODE_VERSION "${NODE_VERSION_RAW}")
 
 execute_process(
-        COMMAND cmd /c echo %USERNAME%
-        OUTPUT_VARIABLE USERNAME_RAW
+        COMMAND reg query "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell Folders" /v "Profile"
+        OUTPUT_VARIABLE USERPROFILE_RAW
         OUTPUT_STRIP_TRAILING_WHITESPACE
 )
+string(REGEX REPLACE ".*\\s(.*)" "\\1" USERPROFILE_PATH "${USERPROFILE_RAW}")
 
-set(NODE_INCLUDE_DIR "C:/Users/${USERNAME_RAW}/AppData/Local/node-gyp/Cache/${NODE_VERSION}/include/node")
+set(NODE_INCLUDE_DIR "${USERPROFILE_PATH}/AppData/Local/node-gyp/Cache/${NODE_VERSION}/include/node")
 set(NAPI_INCLUDE_DIR "./node_modules/node-addon-api/")
 
 file(GLOB SOURCE_FILES "*.cpp" "*.h")
