@@ -1,0 +1,32 @@
+html, body {
+    font-family: 'Arial', 'sans-serif', serif;
+    overflow-y: hidden;
+}
+
+* {
+    user-select: none;
+    padding: 0;
+    margin: 0;
+}
+
+*:focus {
+    outline: none;
+    box-shadow: #499bff 0px 0px 2px;
+}
+
+::-webkit-scrollbar {
+    width: 7px;
+}
+
+::-webkit-scrollbar-track {
+    background: white;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #b0b0b0;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #909090;
+}

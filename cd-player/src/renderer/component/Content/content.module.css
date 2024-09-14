@@ -1,0 +1,49 @@
+:root {
+    --track-info-height: 30px;
+    --control-area-height: 24px;
+}
+
+.content {
+    padding: 2px 8px;
+    font-size: 11px;
+    width: calc(100% - 16px);
+    height: calc(100% - 4px);
+}
+
+.container {
+    display: flex;
+    flex-flow: column;
+    width: 100%;
+    height: 100%;
+}
+
+.trackInfoArea {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: var(--track-info-height);
+    min-height: var(--track-info-height);
+    width: 100%;
+}
+
+.controlArea {
+    width: calc(100% - 8px);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f0f0f0;
+    padding: 4px;
+    border-radius: 3px;
+    border: 1px solid #c5c5c5;
+    height: var(--control-area-height);
+    min-height: var(--control-area-height);
+}
+
+.trackListArea {
+    flex-grow: 1;
+    display: block;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    max-height: calc(100vh - var(--track-info-height) - var(--control-area-height) - 16px);
+    overflow-y: hidden;
+}

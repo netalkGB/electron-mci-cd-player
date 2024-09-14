@@ -1,4 +1,5 @@
-import { Action, mapMethodAndIpc } from './PreloadHelper.ts'
+import { mapMethodAndIpc } from './PreloadHelper.ts'
+import { contextBridge, ipcRenderer } from 'electron'
 
 declare global {
   interface Window {
@@ -17,10 +18,20 @@ declare global {
       getCurrentPosition: () => Promise<number>;
       getCurrentTrackNumber: () => Promise<number>;
     };
+    electron: {
+      minimize: () => (void);
+      close: () => (void);
+      toggleCompactMode: () => (void);
+      showBrowserWindow: () => (void);
+    };
+    electronHandler: {
+      onWindowBlur: (callback: () => void) => void;
+      onWindowFocus: (callback: () => void) => void;
+    };
   }
 }
 
-const mciActions: Action[] = [
+mapMethodAndIpc('mci', [
   { ipcChannel: 'open-cd', methodName: 'openCd' },
   { ipcChannel: 'get-track-count', methodName: 'getTrackCount' },
   { ipcChannel: 'close-cd', methodName: 'closeCd' },
@@ -34,6 +45,19 @@ const mciActions: Action[] = [
   { ipcChannel: 'get-drive-letters', methodName: 'getDriveLetters' },
   { ipcChannel: 'is-cd-inserted', methodName: 'isCdInserted' },
   { ipcChannel: 'eject-cd', methodName: 'ejectCd' }
-]
+])
 
-mapMethodAndIpc('mci', mciActions)
+mapMethodAndIpc('electron', [
+  { ipcChannel: 'minimize', methodName: 'minimize' },
+  { ipcChannel: 'close', methodName: 'close' },
+  { ipcChannel: 'toggle-compact-mode', methodName: 'toggleCompactMode' },
+  { ipcChannel: 'show-browser-window', methodName: 'showBrowserWindow' }
+])
+contextBridge.exposeInMainWorld('electronHandler', {
+  onWindowBlur: (callback: () => void): void => {
+    ipcRenderer.on('window-blur', callback)
+  },
+  onWindowFocus: (callback: () => void): void => {
+    ipcRenderer.on('window-focus', callback)
+  },
+})

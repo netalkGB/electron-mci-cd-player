@@ -1,0 +1,40 @@
+.trackList {
+    height: 100%;
+    width: 100%;
+    background-color: white;
+    overflow-y: scroll;
+    outline: none;
+}
+
+.track {
+    display: flex;
+    align-items: center;
+    padding: 2px;
+}
+
+.track.selected {
+    background-color: #0078d7;
+    color: white;
+}
+
+.trackNumber {
+    width: 30px;
+    text-align: right;
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.trackName {
+    flex-grow: 1;
+}
+
+.trackDuration {
+    margin-left: auto;
+}
+
+.playIcon {
+    margin-left: 7px;
+}
+

@@ -32,9 +32,9 @@ private:
   DWORD SendGetTrackStartCommand(DWORD dwTrack);
   DWORD GetTrackStart(DWORD dwTrack);
   DWORD SendPlayCommand(DWORD dwTrackStart);
+  DWORD SendPlayCommand();
   DWORD SendStopCommand();
-  DWORD SendPauseCommand();
-  DWORD SendResumeCommand();
+  DWORD SendSeekCommand(DWORD dwTo);
   DWORD SendGetCurrentTrackNumberCommand();
   DWORD SendGetTrackLengthCommand(DWORD dwTrack);
   DWORD ConvertToMilliseconds(DWORD dwTime);

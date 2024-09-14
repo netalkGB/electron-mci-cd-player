@@ -44,11 +44,34 @@ namespace mci {
   }
 
   void CdPlayer::Pause() {
-    SendPauseCommand();
+    if (SendSetMciSetFormatCommand(MCI_FORMAT_MSF) != 0) {
+      CloseCd();
+      throw CdPlayerException("Error setting time format");
+    }
+    if (SendGetCurrentPositionCommand()) {
+      CloseCd();
+      throw CdPlayerException("Error getting current position");
+    }
+    DWORD_PTR dwPausedPosition = mciStatusParms.dwReturn;
+    if (SendStopCommand()) {
+      CloseCd();
+      throw CdPlayerException("Error stopping playback");
+    }
+    if (SendSeekCommand(dwPausedPosition)) {
+      CloseCd();
+      throw CdPlayerException("Error seeking to paused position");
+    }
   }
 
   void CdPlayer::Resume() {
-    SendResumeCommand();
+    if (SendSetMciSetFormatCommand(MCI_FORMAT_MSF) != 0) {
+      CloseCd();
+      throw CdPlayerException("Error setting time format");
+    }
+    if (SendPlayCommand()) {
+      CloseCd();
+      throw CdPlayerException("Error resuming playback");
+    }
   }
 
   int CdPlayer::GetCurrentTrackNumber() {
@@ -133,16 +156,18 @@ namespace mci {
     return mciSendCommand(mciOpenParms.wDeviceID, MCI_PLAY, MCI_FROM, reinterpret_cast<DWORD_PTR>(&mciPlayParms));
   }
 
+  DWORD CdPlayer::SendPlayCommand() {
+    return mciSendCommand(mciOpenParms.wDeviceID, MCI_PLAY, 0, reinterpret_cast<DWORD_PTR>(&mciPlayParms));
+  }
+
   DWORD CdPlayer::SendStopCommand() {
     return mciSendCommand(mciOpenParms.wDeviceID, MCI_STOP, 0, reinterpret_cast<DWORD_PTR>(&mciGenericParms));
   }
 
-  DWORD CdPlayer::SendPauseCommand() {
-    return mciSendCommand(mciOpenParms.wDeviceID, MCI_PAUSE, 0, 0);
-  }
-
-  DWORD CdPlayer::SendResumeCommand() {
-    return mciSendCommand(mciOpenParms.wDeviceID, MCI_RESUME, 0, 0);
+  DWORD CdPlayer::SendSeekCommand(DWORD dwTo) {
+    MCI_SEEK_PARMS mciSeekParms = {};
+    mciSeekParms.dwTo = dwTo;
+    return mciSendCommand(mciOpenParms.wDeviceID, MCI_SEEK, MCI_TO, reinterpret_cast<DWORD_PTR>(&mciSeekParms));
   }
 
   DWORD CdPlayer::SendGetCurrentTrackNumberCommand() {

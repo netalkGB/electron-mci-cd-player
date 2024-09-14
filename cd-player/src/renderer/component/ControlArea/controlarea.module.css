@@ -1,0 +1,54 @@
+.controlAreaInner {
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.selectDriveArea {
+    display: flex;
+    align-items: center;
+    width: 50px;
+}
+
+.driveLetter {
+    width: 35px;
+    height: 20px;
+    font-size: 10px;
+    background-color: #ffffff;
+    color: #333333;
+    border: 1px solid #999999;
+    border-radius: 2px;
+}
+
+.buttonArea {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    justify-content: space-between;
+    width: calc(100% - 40px);
+}
+
+.controlButton {
+    width: 20px;
+    height: 20px;
+    background-color: #f0f0f0;
+    border: 1px solid #999999;
+    border-radius: 2px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.controlButton:hover {
+    background-color: #e0e0e0;
+}
+
+.controlButton:active {
+    background-color: #d0d0d0;
+}
+
+.controlButton:disabled {
+    background-color: #f0f0f0;
+    border: 1px solid #c5c5c5;
+    color: #c5c5c5;
+}
