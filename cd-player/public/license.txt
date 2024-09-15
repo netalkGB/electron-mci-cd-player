@@ -1,0 +1,2 @@
+This is a mock.
+When you run npm run build (at package time), it will be replaced with one dynamically generated from package.json.

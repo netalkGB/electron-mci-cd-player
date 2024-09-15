@@ -33,6 +33,36 @@ const createWindow = () => {
     win.webContents.send('window-focus')
   })
 
+  let licenseWindow: BrowserWindow | null = null
+  function createLicenseWindow (): BrowserWindow {
+    const winBounds = win.getBounds()
+    const licenseWindow = new BrowserWindow({
+      width: 600,
+      height: 400,
+      x: winBounds.x,
+      y: winBounds.y,
+      resizable: true,
+      title: 'Open Source Licenses',
+      webPreferences: {
+        contextIsolation: true,
+        nodeIntegration: false,
+      }
+    })
+    licenseWindow.setMenuBarVisibility(false)
+    if (process.env.VITE_DEV_SERVER_URL) {
+      win.webContents.openDevTools()
+      licenseWindow.loadURL(`${process.env.VITE_DEV_SERVER_URL}/license.txt`)
+    } else {
+      licenseWindow.loadFile('dist/license.txt')
+    }
+    return licenseWindow
+  }
+  win.on('close', () => {
+    if (licenseWindow !== null && !licenseWindow.isDestroyed()) {
+      licenseWindow.close()
+    }
+  })
+
   const cdPlayerActions = [
     'open-cd', 'get-track-count', 'close-cd', 'play', 'stop', 'get-current-position',
     'get-track-length', 'get-current-track-number', 'pause', 'resume', 'get-drive-letters',
@@ -84,7 +114,7 @@ const createWindow = () => {
         {
           label: 'Open Source Licenses',
           click: () => {
-            app.quit()
+            licenseWindow = createLicenseWindow()
           }
         }
       ]
