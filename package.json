@@ -1,9 +1,9 @@
 {
   "name": "electron-mci-cd-player",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "scripts": {
     "setup": "node script/setup.mjs",
-    "dev":  "node script/develop.mjs",
+    "dev": "node script/develop.mjs",
     "eslint": "node script/lint.mjs",
     "eslint:fix": "node script/lint.mjs fix",
     "package": "node script/package.mjs"
