@@ -1,5 +1,5 @@
 {
-  "appId": "com.example.app",
+  "appId": "dev.netalk.gb.lab.electron-mci-cd-player",
   "asar": true,
   "directories": {
     "output": "release/${version}"
