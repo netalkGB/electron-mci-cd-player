@@ -62,7 +62,7 @@ export const TrackListArea = () => {
         trackList={trackList}
         onTrackSelect={(track: Track) => {
           playerContext.dispatch({ type: 'SET_PLAY_STATE', payload: 'playing' })
-          window.mci.play(track.id).catch(() => { /* TODO: implements error fallback */ })
+          window.mci.play(track.id).catch(e => console.error(e))
         }}
       />
     </>

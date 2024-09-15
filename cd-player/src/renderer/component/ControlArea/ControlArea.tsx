@@ -112,8 +112,7 @@ export const ControlArea = () => {
       <div className={styles.selectDriveArea}>
         <select
           disabled={isBusy} className={styles.driveLetter} onChange={(event: ChangeEvent<HTMLSelectElement>) => {
-            handleSelectDriveLetter(event.target.value).catch(() => { /* TODO: implements error handler */
-            })
+            handleSelectDriveLetter(event.target.value).catch((e => console.error(e)))
           }}
         >
           {
@@ -129,17 +128,14 @@ export const ControlArea = () => {
             const currentTrackNumber = state.currentTrackNumber
 
             if (currentTrackNumber === 1) {
-              window.mci.play(currentTrackNumber).catch(() => { /* TODO: implements error fallback */
-              })
+              window.mci.play(currentTrackNumber).catch((e => console.error(e)))
               return
             }
 
             if (position >= 2000) {
-              window.mci.play(currentTrackNumber).catch(() => { /* TODO: implements error fallback */
-              })
+              window.mci.play(currentTrackNumber).catch((e => console.error(e)))
             } else {
-              window.mci.play(currentTrackNumber - 1).catch(() => { /* TODO: implements error fallback */
-              })
+              window.mci.play(currentTrackNumber - 1).catch((e => console.error(e)))
             }
           }}
           disabled={state.playState === 'stopped' || !playable}
@@ -179,8 +175,7 @@ export const ControlArea = () => {
             if (currentTrackNumber === state.totalTrackCount) {
               return
             }
-            window.mci.play(currentTrackNumber + 1).catch(() => { /* TODO: implements error fallback */
-            })
+            window.mci.play(currentTrackNumber + 1).catch((e => console.error(e)))
           }}
           disabled={state.playState === 'stopped' || !playable}
         ><SkipForward size={10} />
