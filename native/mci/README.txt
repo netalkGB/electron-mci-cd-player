@@ -1,5 +1,2 @@
 build
-build.bat
-
-clean
-node-gyp clean
+npx cmake-js rebuild

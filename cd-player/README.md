@@ -1,4 +1,4 @@
-# Vite Project
+# Electron MCI CD PLayer
 
 This project is a setup using Vite, React, and Electron.
 
