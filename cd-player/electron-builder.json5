@@ -9,6 +9,7 @@
     "dist"
   ],
   "win": {
+    "icon": "assets/win/icon.ico",
     "target": [
       {
         "target": "nsis",
