@@ -41,12 +41,6 @@ To build the application and create the installer, run:
 
 The installer will be generated in the `cd-player/release/${version}/` directory.
 
-## Technologies Used
-
-- **Electron**: A framework for building cross-platform desktop applications.
-- **React**: A JavaScript library for building user interfaces.
-- **Media Control Interface (MCI)**: Used via a native extension to enable CD playback within the Electron application.
-
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
