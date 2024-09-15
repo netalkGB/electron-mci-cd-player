@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain } from 'electron'
+import { app, BrowserWindow, dialog, ipcMain, Menu } from 'electron'
 import path from 'path'
 import * as CdPlayer from './CdPlayer.ts'
 import { fileURLToPath } from 'url'
@@ -54,8 +54,45 @@ const createWindow = () => {
     })
   })
 
-  const electronActions = ['minimize', 'close', 'toggle-compact-mode', 'show-browser-window']
-  const electronWindow = new ElectronWindow(win)
+  const menu = Menu.buildFromTemplate([
+    {
+      label: 'File',
+      submenu: [
+        {
+          label: 'Exit',
+          click: () => {
+            app.quit()
+          }
+        }
+      ]
+    },
+    {
+      label: 'Help',
+      submenu: [
+        {
+          label: 'About',
+          click: () => {
+            dialog.showMessageBox({
+              type: 'info',
+              title: 'About',
+              message: 'Electron MCI CD Player',
+              detail: `Version: ${app.getVersion()}\nDeveloped by: gb`,
+              buttons: ['OK']
+            }).catch(console.error)
+          }
+        },
+        {
+          label: 'Open Source Licenses',
+          click: () => {
+            app.quit()
+          }
+        }
+      ]
+    }
+  ])
+
+  const electronActions = ['minimize', 'close', 'toggle-compact-mode', 'show-browser-window', 'show-menu']
+  const electronWindow = new ElectronWindow(win, menu)
   electronActions.forEach(action => {
     const camelCaseAction = toCamelCase(action)
     // @ts-expect-error Disabling due to various possible types

@@ -1,5 +1,6 @@
 import styles from './titlebar.module.css'
 import { useEffect, useState } from 'react'
+import { ChevronDown } from 'lucide-react'
 
 interface TitleBarProps {
   className?: string
@@ -27,6 +28,7 @@ export const TitleBar = ({ className }: TitleBarProps) => {
     <div className={`${className} ${styles.container} ${focused ? styles.focused : styles.unfocused}`}>
       <div className={styles.controlArea}>
         <div>
+          <button className={styles.button} onClick={() => window.electron.showMenu()}><ChevronDown size={8} /></button>
           <span>Electron MCI CD Player</span>
         </div>
         <div>
