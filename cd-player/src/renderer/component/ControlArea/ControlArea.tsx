@@ -106,7 +106,7 @@ export const ControlArea = () => {
       setIsBusy(false)
     }
   }
-
+  let previousButtonClickTime = 0
   return (
     <div className={styles.controlAreaInner}>
       <div className={styles.selectDriveArea}>
@@ -124,19 +124,28 @@ export const ControlArea = () => {
       <div className={styles.buttonArea}>
         <button
           className={styles.controlButton} onClick={() => {
-            const position = state.currentTrackPosition
+            if (isBusy) {
+              return
+            }
             const currentTrackNumber = state.currentTrackNumber
 
             if (currentTrackNumber === 1) {
-              window.mci.play(currentTrackNumber).catch((e => console.error(e)))
+              setIsBusy(true)
+              window.mci.play(currentTrackNumber).catch((e => console.error(e))).finally(() => {
+                setIsBusy(false)
+              })
               return
             }
 
-            if (position >= 2000) {
-              window.mci.play(currentTrackNumber).catch((e => console.error(e)))
+            if (previousButtonClickTime + 2000 > Date.now()) {
+              setIsBusy(true)
+              window.mci.play(currentTrackNumber - 1).catch((e => console.error(e))).finally(() => {
+                setIsBusy(false)
+              })
             } else {
-              window.mci.play(currentTrackNumber - 1).catch((e => console.error(e)))
+              window.mci.play(currentTrackNumber).catch((e => console.error(e)))
             }
+            previousButtonClickTime = Date.now()
           }}
           disabled={state.playState === 'stopped' || !playable}
         ><SkipBack size={10} />
