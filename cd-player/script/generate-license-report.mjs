@@ -11,7 +11,7 @@ checker.init({
     return
   }
   const keys = Object.keys(packages)
-  let report = 'Third-Party Software Licenses\n This software uses the following third-party packages:\n'
+  let report = ''
   const licenseSet = new Set()
   for (const key of keys) {
     report += '--------------------------------------\n'
