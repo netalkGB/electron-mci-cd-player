@@ -3,7 +3,7 @@
 
 import { parentPort } from 'worker_threads';
 import mci from 'mci';
-parentPort.setMaxListeners(1024);
+parentPort.setMaxListeners(0);
 
 const actions = [
   'openCd', 'getTrackCount', 'closeCd', 'play', 'stop', 'pause', 'resume',
