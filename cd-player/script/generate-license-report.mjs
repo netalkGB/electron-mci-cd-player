@@ -12,7 +12,7 @@ checker.init({
   }
   const keys = Object.keys(packages)
   let report = 'Third-Party Software Licenses\n This software uses the following third-party packages:\n'
-  let licenseSet = new Set()
+  const licenseSet = new Set()
   for (const key of keys) {
     report += '--------------------------------------\n'
     const { licenses, repository, publisher, url, licenseFile } = packages[key]
@@ -32,13 +32,11 @@ checker.init({
             const data = await fs.readFile(path.join(filePath, licenseFilePath), 'utf8')
             report += `License:\n${data}\n`
           } catch (err) {
-            console.error(`Error reading license file for ${key}:`, err)
-            process.exit(1)
+            throw new Error(`Error reading license file for ${key}: ${err.message}`)
           }
         }
       } else {
-        console.error(`No license file found for ${key}`)
-        process.exit(1)
+        throw new Error(`No license file found for ${key}`)
       }
     } else if (licenseFile) {
       const fileName = path.basename(licenseFile)
@@ -47,16 +45,13 @@ checker.init({
           const data = await fs.readFile(licenseFile, 'utf8')
           report += `License:\n${data}\n`
         } catch (err) {
-          console.error(`Error reading license file for ${key}:`, err)
-          process.exit(1)
+          throw new Error(`Error reading license file for ${key}: ${err.message}`)
         }
       } else {
-        console.error(`No license file found for ${key}`)
-        process.exit(1)
+        throw new Error(`No license file found for ${key}`)
       }
     } else {
-      console.error(`No license file found for ${key}`)
-      process.exit(1)
+      throw new Error(`No license file found for ${key}`)
     }
     licenseSet.add(licenses)
   }
