@@ -20,7 +20,7 @@ const removeListener = (listener: (message: Message) => void): void => {
 
 export const startWorker = (): void => {
   worker = new Worker(path.join(__dirname, 'worker', 'cdpWorker.js'))
-  worker.setMaxListeners(1024)
+  worker.setMaxListeners(0)
 }
 
 const createWorkerAction = (action: string) => (...args:any[]): Promise<any> => (
